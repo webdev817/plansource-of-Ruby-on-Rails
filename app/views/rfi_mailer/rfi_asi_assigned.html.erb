@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    </head>
+    <body>
+      <h1><%= @subject %></h1>
+
+      <p><strong>Job:</strong> <%= (@rfi || @asi).job.name %></p>
+
+      <% if !@rfi.nil? %>
+        <p><strong>RFI Name:</strong> <%= @rfi.subject %></p>
+        <p><strong>Notes:</strong> <%= @rfi.notes %></p>
+
+        <p><strong>Attachments:</strong></p>
+
+        <% @rfi.attachments.each do |attachment| %>
+          <p>
+            <%= link_to attachment.filename, api_rfi_download_attachment_url(attachment.id, host: ENV["SITE_URL"]) %>
+          </p>
+        <% end %>
+
+        <% if @rfi.attachments.empty? %>
+          <p>No Attachments</p>
+        <% end %>
+
+        <br>
+      <% end %>
+
+      <% if !@asi.nil? %>
+        <p><strong>ASI Name:</strong> <%= @asi.subject %></p>
+        <p><strong>Notes:</strong> <%= @asi.notes %></p>
+
+        <p><strong>Attachments:</strong></p>
+
+        <% @asi.attachments.each do |attachment| %>
+          <p>
+            <%= link_to attachment.filename, api_asi_download_attachment_url(attachment.id, host: ENV["SITE_URL"]) %>
+          </p>
+        <% end %>
+
+        <% if @asi.attachments.empty? %>
+          <p>No Attachments</p>
+        <% end %>
+
+        <br>
+      <% end %>
+
+      <p>
+        <%= link_to "View RFIs and ASIs for this job.", app_url(host: ENV["SITE_URL"]) + "#/jobs/#{@job.id}/rfi_asi" %>
+      </p>
+    </body>
+</html>

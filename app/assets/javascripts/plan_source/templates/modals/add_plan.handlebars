@@ -1,0 +1,23 @@
+<div class="modal-wrapper">
+	<div class="overlay"></div>
+	<div class="dialog box box-border">
+		<div class="header">
+			<p class="title">Enter a plan name.</p>
+		</div>
+		<div class="body">
+			<p>Enter a name for your new plan.</p>
+			<div class="control-group">
+				<div class="controls">
+					{{ view PlanSource.TextField class="form-control" placeholder="Plan name" focus=true id="new-plan-name" }}
+					<span class="help-inline"></span>
+				</div>
+			</div>
+		</div>
+		<div class="footer">
+			<div class="buttons">
+				<a class="button" {{action "close"}}>Cancel</a>
+				<a class="button button-blue" {{action "addPlan" target=controller}} >Create</a>
+			</div>
+		</div>
+	</div>
+</div>

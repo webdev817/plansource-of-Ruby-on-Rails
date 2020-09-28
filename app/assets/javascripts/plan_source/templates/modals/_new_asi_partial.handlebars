@@ -1,0 +1,64 @@
+<div class="dialog box box-border" style="width: 600px;">
+  <div class="header">
+    <p class="title">Add An ASI To This RFI</p>
+  </div>
+  <div class="body">
+    <div class="row margin-bottom">
+      <div class="col-sm-4"><p>Plan Sheets Affected:</p></div>
+      <div class="col-sm-8">
+        <div class="control-group">
+          <div class="controls">
+            <input class="form-control" id="asi-plan-sheets-affected">
+            <span class="help-inline"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row margin-bottom">
+      <div class="col-sm-4"><p>Included In Addendum #:</p></div>
+      <div class="col-sm-8">
+        <div class="control-group">
+          <div class="controls">
+            <input class="form-control" id="asi-in-addendum">
+            <span class="help-inline"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row margin-bottom">
+      <div class="col-sm-12">
+        <p>Subject:</p>
+        <div class="control-group">
+          <div class="controls">
+            <input class="form-control" id="asi-subject">
+            <span class="help-inline">{{asiErrors.subject}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row margin-bottom">
+      <div class="col-sm-12">
+        <p>Notes:</p>
+        <div class="control-group">
+          <div class="controls">
+            <textarea style="width: 100%; max-width: 100%; height: 150px; padding: 10px;" placeholder="Tell us about your ASI, etc" id="asi-notes"></textarea>
+            <span class="help-inline">{{asiErrors.notes}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {{partial "modals/asi_attachments_partial"}}
+  </div>
+  <div class="footer">
+    <div class="buttons">
+      <a class="button" {{action "close"}}>Cancel</a>
+      <a id="submit-asi-button" class="button button-blue" {{action "save" target=controller}}>Submit ASI</a>
+    </div>
+  </div>
+</div>
+
+{{partial "modals/asi_dropzone_partial"}}

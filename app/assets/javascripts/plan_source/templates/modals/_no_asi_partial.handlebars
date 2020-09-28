@@ -1,0 +1,15 @@
+<div class="dialog box box-border" style="width: 600px;">
+  <div class="header">
+    <p class="title">No ASI for this RFI yet.</p>
+  </div>
+  <div class="body">
+    <p>This RFI doesn't have an associated ASI yet.</p>
+  </div>
+  <div class="footer">
+    <div class="buttons" style="text-align: center;">
+      {{#if canCreateLinkedASI}}
+        <a class="button button-blue" {{action "addASI" target=controller}}>Create ASI</a>
+      {{/if}}
+    </div>
+  </div>
+</div>

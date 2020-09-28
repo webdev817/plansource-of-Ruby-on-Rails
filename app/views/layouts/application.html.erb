@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><%= title yield(:title) %></title>
+    <%= favicon_link_tag %>
+    <meta name="description" content="<%= content_for?(:description) ? yield(:description) : "Plansource" %>">
+    <%= stylesheet_link_tag "application", :media => "all" %>
+    <%= javascript_include_tag "application" %>
+    <%= csrf_meta_tags %>
+    <!-- <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'> -->
+    <%= yield(:head) %>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-149703468-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-149703468-2');
+    </script>
+  </head>
+  <body data-controller="<%= controller_name %>" data-action="<%= action_name %>">
+    <div id="main" role="main">
+      <%= render 'layouts/browser_error' %>
+      <div class="header">
+        <%= render 'layouts/navigation' %>
+      </div>
+        <div id="site-notifications" class="container">
+           <div class="row-fluid">
+            <div class="col-sm-12">
+              <%= render 'layouts/messages' %>
+            </div>
+          </div>
+        </div> <!--! end of .container -->
+        <%= yield %>
+      <div id="push"></div>
+    </div> <!--! end of #main -->
+
+    <footer>
+      <div class="container">
+        <p class="muted credit" style="margin-top:20px"><%= link_to "Developed by VE Design Group", "http://vedesigngroup.com/" %></p>
+      </div>
+    </footer>
+
+  </body>
+</html>

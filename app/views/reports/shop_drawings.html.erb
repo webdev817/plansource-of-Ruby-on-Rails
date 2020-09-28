@@ -1,0 +1,73 @@
+<% content_for :title, "Shop Drawings Report" %>
+
+<div class="section printable">
+	<div class="container" style="margin-bottom:30px">
+		<h1>Shop Drawings Report (<%= basic_date_format(DateTime.now) %>)</h1>
+    <p class="printable-hidden">
+      <%= link_to "Change Options", shop_drawings_report_jobs_path %>
+    </p>
+    <p class="printable-hidden">
+      <a href="#" class="button button-blue" onclick="window.print();">Print Report</a>
+    </p>
+
+		<div class="row">
+			<div class="col-sm-12">
+        <% @jobs.each do |job| %>
+          <div class="printable-section">
+            <h2><%= job.name %></h2>
+
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>CSI</th>
+                  <th>Plan Name</th>
+                  <th>Status</th>
+                  <th>Assigned To</th>
+                  <th>Updated</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% if @statuses.include?("Pending") %>
+                  <% job.submittals.each do |submittal| %>
+                    <tr>
+                      <td><span class="text-nowrap"><%= format_csi(submittal.data["csi_code"]) %></span></td>
+                      <td class="word">
+                        <span title="<%= submittal.data["description"] %>"><%= submittal.data["description"] %></span>
+                      </td>
+                      <td><span>Pending</span></td>
+                      <td></td>
+                      <td><span><%= basic_date_format(submittal.updated_at) %></span></td>
+                    </tr>
+                  <% end %>
+                <% end %>
+
+                <% job.ordered_shop_drawings.each do |shop_drawing| %>
+                  <% # A blank status or assigned user can be a blank string or nil. Default nil to blank string. %>
+                  <% next if !@statuses.include?(shop_drawing.status || "") %>
+                  <% next if !@assigned_user_ids.include?(shop_drawing.assigned_user_id.to_s || "") %>
+
+                  <tr>
+                    <td><span class="text-nowrap"><%= format_csi(shop_drawing.csi) %></span></td>
+                    <td class="word">
+                      <span title="<%= shop_drawing.plan_name %>"><%= shop_drawing.plan_name %></span>
+                    </td>
+                    <td><span><%= shop_drawing.status %></span></td>
+                    <% if shop_drawing.assigned_user %>
+                      <td title="<%= shop_drawing.assigned_user.full_name %>">
+                        <%= shop_drawing.assigned_user.first_name %>
+                      </td>
+                    <% else %>
+                      <td></td>
+                    <% end %>
+                    <td><span><%= basic_date_format(shop_drawing.plan_updated_at) %></span></td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        <% end %>
+			</div>
+		</div>
+	</div>
+</div>
+

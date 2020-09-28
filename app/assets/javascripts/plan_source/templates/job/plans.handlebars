@@ -1,0 +1,80 @@
+<div class="table-responsive" id="plan-table">
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th {{action "sort" "plan_num"}}><a>#</a></th>
+        <th {{action "sort" "plan_name"}}><a>Plan Name</a></th>
+        <th {{action "sort" "plan_updated_at"}}><a>Updated</a></th>
+        <th {{action "sort" "filename"}}><a>Download File</a></th>
+        <th class="text-right">Controls</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each controller}}
+        {{#if hasPlan}}
+          <tr class="table-row-button" data-link="/api/plans/embedded/{{unbound id}}">
+        {{else}}
+          <tr>
+        {{/if}}
+
+          <td><span>{{plan_num}}</span></td>
+
+          <td class="word"><span title="{{unbound plan_name}}">{{plan_name}}</span></td>
+
+          <td><span>{{date plan_updated_at}}</span></td>
+
+          <td>
+            {{#if hasPlan}}
+                <a href="/api/download/{{unbound id}}" title="{{unbound filename}}">{{truncate filename}}</a>
+            {{/if}}
+            {{#if hasLink}}
+                <a href="{{unbound plan_link}}" target="_blank">{{truncate plan_link}}</a>
+            {{/if}}
+          </td>
+
+          <td>
+            <ul style="padding-left:0px;" class="controls text-right unstyled">
+              {{#if hasPlan}}
+                <li><a href="/api/plans/embedded/{{unbound id}}" target="_blank">View</a></li>
+              {{/if}}
+                {{#if hasLink}}
+                    <li><a href="{{unbound plan_link}}" target="_blank">View</a></li>
+                {{/if}}
+
+              {{#unless controller.jobController.model.isShared}}
+                <li><a {{action "openDeletePlanModal" this}}>Delete</a></li>
+                <li><a {{action "openEditPlanModal" this}} data-id="{{unbound id}}">Edit</a></li>
+              {{else}}
+                {{#can_delete_plan}}
+                  <li><a {{action "openDeletePlanModal" this}}>Delete</a></li>
+                {{/can_delete_plan}}
+              {{/unless}}
+
+              <li><a {{action "openDetailsPlanModal" this}} data-id="{{unbound id}}">Details</a></li>
+            </ul>
+          </td>
+        </tr>
+      {{else}}
+        <tr>
+          <td>
+            {{#manager}}
+              {{#unless job.isShared}}
+                <p>You need to add a plan to your job.</p>
+              {{else}}
+                <p>The owner hasn't added any plans.</p>
+              {{/unless}}
+            {{else}}
+              <p>The owner of this plan has not added any plans.</p>
+            {{/manager}}
+          </td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>
+
+<script>
+  $(function () {
+    $('[data-toggle="popover"]').popover({trigger:"hover", placement:"top", delay:500})
+  })
+</script>

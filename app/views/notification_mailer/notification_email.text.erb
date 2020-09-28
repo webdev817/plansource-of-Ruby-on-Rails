@@ -1,0 +1,9 @@
+PlanSource.io Notification
+
+Updated By: <%= @event_user.email.capitalize %>
+Updated Job: <%= @job.name %>
+Updated Plan: <%= @plan.plan_name %>
+Tab: <%= @plan.tab.capitalize %>
+Updated At: <%= @event.created_at.in_time_zone(ActiveSupport::TimeZone.new("Central Time (US & Canada)")).strftime("%A %b %d, %Y at %I:%M %p %Z") %>
+
+

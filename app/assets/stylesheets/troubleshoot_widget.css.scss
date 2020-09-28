@@ -1,0 +1,102 @@
+/*
+ *= require ./application/ui/browser
+ *= require ./application/ui/box
+ *= require ./application/ui/modal
+ *= require ./application/ui/sexy_buttons
+ *= require_self
+*/
+
+#troubleshoot-widget {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    margin: 20px;
+    max-width: 100%;
+    cursor: pointer;
+
+    &:hover {
+        .message {
+            display: inline-block;
+        }
+
+        .circle {
+            opacity: 1;
+        }
+    }
+
+    .message {
+        color: #ffffff;
+        background-color: #E88449;
+        border: 2px solid darken(#E88449, 10%);
+        display: none;
+        padding: 5px 10px;
+        line-height: 1;
+        border-radius: 4px;
+
+        p {
+            margin: 0;
+        }
+    }
+
+    .circle {
+        background-color: #E88449;
+        border: 2px solid darken(#E88449, 10%);
+        display: inline-block;
+        width: 50px;
+        height: 50px;
+        max-width: 100%;
+        border-radius: 50%;
+        opacity: .6;
+
+        i {
+            color: #ffffff;
+            font-size: 24px;
+            display: block;
+            text-align: center;
+            padding-top: 10px;
+        }
+    }
+}
+
+#troubleshoot-form-overlay {
+    display: none;
+    z-index: 99999;
+    overflow-x: hidden;
+    overflow-y: scroll;
+
+    .label {
+        font-weight: bold;
+    }
+
+    .control-group {
+        margin-bottom: 20px;
+
+        textarea {
+            width: 100%;
+            border-radius: 3px;
+            padding: 10px;
+        }
+    }
+
+    #troubleshoot-files-dnd {
+        height: 100px;
+        border: 3px dashed #00baec;
+        padding: 30px 20px;
+        margin-bottom: 15px;
+        cursor: pointer;
+
+        .dz-message {
+            color: #cccccc;
+            text-align: center;
+        }
+    }
+
+    .file-preview {
+        font-size: 12px;
+
+        &:hover {
+            text-decoration: underline;
+            cursor: pointer;
+        }
+    }
+}

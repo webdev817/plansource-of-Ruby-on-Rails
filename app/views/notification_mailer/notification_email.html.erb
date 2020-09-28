@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  </head>
+  <body>
+    <style>
+      body{
+        font-family: Verdana, Arial, Helvetica, sans-serif;
+      }
+    </style>
+    <h1>PlanSource.io Notification</h1>
+    <p><%= link_to 'Go to PlanSource', root_url %></p>
+    <p>
+      Updated By: <a href="mailto:<%= @event_user.email %>" target="_blank"><%= @event_user.email.capitalize %></a>
+    </p>
+    <p>
+      Updated Job: <a href="<%= "#{app_url}#/jobs/#{@job.id}" %>" target="_blank"><%= @job.name %></a>
+    </p>
+    <p>
+      Updated Plan: <a href="<%= "#{app_url}#/jobs/#{@job.id}/#{@plan.tab.downcase}" %>" target="_blank"><%= @plan.plan_name %></a>
+    </p>
+    <p>
+      Tab: <a href="<%= "#{app_url}#/jobs/#{@job.id}/#{@plan.tab.downcase}" %>" target="_blank"><%= @plan.tab.capitalize %></a>
+    </p>
+    <p>
+      Updated At: <%= @event.created_at.in_time_zone(ActiveSupport::TimeZone.new("Central Time (US & Canada)")).strftime("%A %b %d, %Y at %I:%M %p %Z") %>
+    </p>
+    <p style="margin-top:50px"><%= link_to 'Unsubscribe', unsubscribe_url(:id => @sub.token)%> from notifications on job <%@job.name%></p>
+
+  </body>
+</html>

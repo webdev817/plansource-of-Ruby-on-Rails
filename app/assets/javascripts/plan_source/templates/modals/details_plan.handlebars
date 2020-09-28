@@ -1,0 +1,73 @@
+<div class="modal-wrapper">
+  <div class="overlay"></div>
+  <div class="dialog box box-border" style="width: 600px;">
+    <div class="header">
+      <div class="pull-right">
+        <button type="button" {{action "close"}} class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <h4 class="modal-title">Details {{this.plan_name}}</h4>
+    </div>
+    <div class="body">
+      {{partial "modals/details_plan_partial"}}
+
+
+      {{#if submittals}}
+        <hr>
+
+        <div class="modal-section">
+          <h4 class="title">Submittals</h4>
+          <div class="container-fluid">
+            {{#each submittals}}
+              <div class="row margin-bottom">
+                <div class="col-sm-7">
+                  <a href="#" {{action "openSubmittalModal" this}}>{{data.description}}</a>
+                </div>
+                <div class="col-sm-5">
+                  submitted {{date created_at}}
+                </div>
+              </div>
+            {{else}}
+              <div>
+                This plan has no submittals.
+              </div>
+            {{/each}}
+          </div>
+        </div>
+      {{/if}}
+
+      <hr>
+
+      <div class="modal-section">
+        <h4 class="title">Plan History</h4>
+        <div class="container-fluid">
+          {{#each planRecordsArchivedProp}}
+          <div class="row" style="margin-bottom:20px">
+            <div class="col-sm-8">
+                {{#if this.filename}}
+                  <a href="/api/download/{{unbound this.id}}?type=plan_record" title="{{unbound filename}}"><span style="font-size:110%;margin-right:10px" class="glyphicon glyphicon-download"></span></a>
+                  <a style="word-wrap:break-word" href="/api/plans/embedded/{{unbound this.id}}?type=plan_record" target="_blank">{{this.filename}}</a>
+                {{else}}
+                  <a href="{{unbound plan_link}}" target="_blank"><span style="font-size:110%;margin-right:10px" class="glyphicon glyphicon-link"></span></a>
+                  <a style="word-wrap:break-word" href="{{unbound plan_link}}" target="_blank">{{this.plan_link}}</a>
+                {{/if}}
+            </div>
+            <div class="col-sm-4" style="padding-left:30px;">
+              <div> changed {{date created_at }}</div>
+            </div>
+          </div>
+          {{else}}
+          <div>
+            This plan has no plan history.
+          </div>
+          {{/each}}
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div class="buttons">
+        <a class="button" {{action "close"}}>Close</a>
+      </div>
+    </div>
+  </div>
+</div>

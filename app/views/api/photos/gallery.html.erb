@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+
+    <script src="/assets/jquery.magnify.js"></script>
+
+    <link href="/assets/magnify.css" media="all" rel="stylesheet" type="text/css">
+    <link href="/assets/font-awesome.min.css" media="all" rel="stylesheet" type="text/css">
+
+    <style>
+      * { -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; }
+      html, body, .magnify { width: 100%; height: 100%; margin: 0; overflow: hidden; text-align: center; }
+      img { max-width: 100%; max-height: 100%; margin: auto; }
+      #overlay {
+        background-color: rgba(0, 0, 0, .8);
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translate(-50%, 0%);
+        z-index: 999999;
+      }
+      #overlay p {
+        color: #ffffff;
+        font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+        font-size: 14px;
+        line-height: 1.5;
+        text-align: left;
+        padding: 0 15px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        margin: 10px 0;
+      }
+      #overlay:hover p {
+        white-space: normal;
+      }
+      #overlay .button-container {
+        white-space: nowrap;
+      }
+      #overlay .button-container .mobile {
+        display: none;
+      }
+      #overlay .button-container .desktop {
+        display: block;
+      }
+      #overlay .button {
+        background: none;
+        border: none;
+        color: #ffffff;
+        display: inline-block;
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+        padding: 15px 0;
+      }
+      #overlay .button:hover, #overlay .button.active {
+        background-color: rgba(0, 0, 0, .9);
+        cursor: pointer;
+      }
+      #overlay .button:disabled {
+        background: none;
+        color: #555555;
+      }
+      #overlay .button:focus {
+        outline: 0;
+      }
+
+      .magnify > .magnify-lens {
+        width: 300px;
+        height: 300px;
+      }
+
+      @media (max-width: 350px) {
+        #overlay {
+          width: 100%;
+        }
+        #overlay .button-container {
+          white-space: normal;
+          display: block;
+          width: 100%;
+          text-align: center;
+        }
+        #overlay .button-container .mobile {
+          display: block;
+        }
+        #overlay .button-container .desktop {
+          display: none;;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <img id="gallery-photo">
+    <div id="overlay">
+      <p id="photo-description"></p>
+      <div class="button-container">
+        <div class="desktop">
+          <button href="#" id="previous-photo" class="button icon-arrow-left"></button>
+          <button href="#" id="download-photo" class="button icon-download"></button>
+          <button href="#" id="edit-photo" class="button icon-pencil"></button>
+          <button href="#" id="delete-photo" class="button icon-trash"></button>
+          <button href="#" id="zoom-photo" class="button icon-search"></button>
+          <button href="#" id="next-photo" class="button icon-arrow-right"></button>
+        </div>
+        <div class="mobile">
+          <div>
+            <button href="#" id="edit-photo" class="button icon-pencil"></button>
+            <button href="#" id="delete-photo" class="button icon-trash"></button>
+            <button href="#" id="zoom-photo" class="button icon-search"></button>
+          </div>
+          <div>
+            <button href="#" id="previous-photo" class="button icon-arrow-left"></button>
+            <button href="#" id="download-photo" class="button icon-download"></button>
+            <button href="#" id="next-photo" class="button icon-arrow-right"></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      $(document).ready(function () {
+        var _$zoom = null;
+        var _photosData = <%= @photos_map.to_json.html_safe %>;
+        var _currentPhotoId = <%= @photo_id %>;
+
+        var $galleryPhoto = $("#gallery-photo");
+        var $photoDescription = $("#photo-description");
+        var $nextPhotoButton = $("#next-photo");
+        var $downloadPhotoButton = $("#download-photo");
+        var $editPhotoButton = $("#edit-photo");
+        var $deletePhotoButton = $("#delete-photo");
+        var $zoomPhotoButton = $("#zoom-photo");
+        var $previousPhotoButton = $("#previous-photo");
+
+        var renderPhoto = function (photo_id) {
+          var photo = _photosData[photo_id];
+          if (!photo) return;
+          // Remove any zooming on current photo
+          removeZoom();
+
+          var description = photo["description"]
+
+          _currentPhotoId = photo_id;
+          $galleryPhoto.attr("src", photo["large_url"]);
+          $galleryPhoto.attr("data-magnify-src", photo["huge_url"]);
+
+          if (description && description.length) {
+            $photoDescription.text(description);
+            $photoDescription.show();
+          } else {
+            $photoDescription.hide();
+          }
+
+          $previousPhotoButton.attr("disabled", !getPreviousPhotoId(photo_id));
+          $editPhotoButton.attr("disabled", !photo["can_edit"]);
+          $deletePhotoButton.attr("disabled", !photo["can_delete"]);
+          $nextPhotoButton.attr("disabled", !getNextPhotoId(photo_id));
+        };
+
+        var removeZoom = function () {
+          if (_$zoom) {
+            $zoomPhotoButton.removeClass('active');
+            _$zoom.destroy();
+            _$zoom = null;
+          }
+        };
+
+        var getUpcomingPhotoId = function (photo_id, direction) {
+          var photo = _photosData[photo_id];
+          if (!photo) return null;
+
+          var nextPhoto = _photosData[photo[direction + "_photo_id"]];
+          while (nextPhoto && nextPhoto["deleted"]) { nextPhoto = _photosData[nextPhoto[direction + "_photo_id"]]; }
+          if (!nextPhoto) return null;
+          return nextPhoto.id;
+        };
+
+        var getNextPhotoId = function (photo_id) { return getUpcomingPhotoId(photo_id, "next"); };
+        var getPreviousPhotoId = function (photo_id) { return getUpcomingPhotoId(photo_id, "previous"); };
+
+        renderPhoto(_currentPhotoId);
+
+        $nextPhotoButton.click(function () {
+          renderPhoto(getNextPhotoId(_currentPhotoId));
+        });
+
+        $previousPhotoButton.click(function () {
+          renderPhoto(getPreviousPhotoId(_currentPhotoId));
+        });
+
+        $downloadPhotoButton.click(function () {
+          var currentPhoto = _photosData[_currentPhotoId];
+
+          window.location = "/api/photos/download/" + currentPhoto["id"];
+        });
+
+        $editPhotoButton.click(function () {
+          var currentPhoto = _photosData[_currentPhotoId];
+          var description = prompt("Enter a photo description for this photo.", (currentPhoto["description"] || ""));
+          if (description === null) return;
+
+          currentPhoto["description"] = description;
+
+          $.ajax({
+              url: "/api/photos/" + currentPhoto["id"],
+              type: 'POST',
+              data : { photo: { description: description } },
+          }).then(function(data, t, xhr){
+            console.log("Photo updated.");
+
+            // Show the new description
+            $photoDescription.text(description);
+            $photoDescription.show();
+          });
+        });
+
+        $deletePhotoButton.click(function () {
+          var areYouSure = confirm("Are you sure you want to delete this photo?");
+          if (!areYouSure) return;
+
+          var currentPhoto = _photosData[_currentPhotoId];
+          currentPhoto["deleted"] = true;
+          $.ajax({
+              url: "/api/photos/" + currentPhoto["id"] + "/destroy",
+              type: 'POST',
+          }).then(function(data, t, xhr){
+            console.log("Photo deleted.");
+          });
+
+          renderPhoto(getNextPhotoId(_currentPhotoId));
+        });
+
+        $zoomPhotoButton.click(function (e) {
+          var $el = $(e.target);
+
+          if (!_$zoom) {
+            $el.addClass('active');
+            _$zoom = $galleryPhoto.magnify();
+          } else {
+            removeZoom();
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

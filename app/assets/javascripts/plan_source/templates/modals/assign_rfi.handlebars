@@ -1,0 +1,69 @@
+<div class="modal-wrapper">
+  <div class="overlay"></div>
+  <div class="dialog box box-border" style="width: 95%;">
+    <div class="header">
+      <h4 class="modal-title">
+        Current RFI Manager: {{ projectManager.first_name }} {{ projectManager.last_name }} ({{ projectManager.email }})
+      </h4>
+    </div>
+    <div class="body">
+      <p>Select the contact you want to assign this RFI to.</p>
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="form-control-padding">
+            Sort by
+            <a class="sort-option" {{ action "sort" "first_name" }}>First Name</a> |
+            <a class="sort-option" {{ action "sort" "last_name" }}>Last Name</a> |
+            <a class="sort-option" {{ action "sort" "sort_email" }}>Email</a>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <form id="share-search-form" class="pull-right">
+            <input placeholder="Search..." class="form-control form-smaller form-control-padding" style="max-width:250px" id="share-search-input-modal"/>
+          </form>
+        </div>
+      </div>
+
+      <div class="scroller-xlarge">
+        <div class="table-responsive">
+
+          <table class="table table-hover table-striped header-fixed" id="contacts-list">
+            <thead>
+              <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+              </tr>
+            </thead>
+            <tbody>
+              {{#each controller }}
+                <tr {{ action "selectContact" this }} style="cursor: pointer;">
+                  <td>{{ unbound first_name }}</td>
+                  <td>{{ unbound last_name}}</td>
+                  <td>{{ unbound email }}</td>
+                </tr>
+              {{/each}}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <div class="buttons">
+        <a class="button" {{action "close" }} >Cancel</a>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+$("#share-search-input-modal").keyup(function () {
+  var filter = jQuery(this).val();
+  jQuery("#contacts-list tbody tr").each(function () {
+    if (jQuery(this).text().search(new RegExp(filter, "i")) < 0) {
+      jQuery(this).hide();
+    } else {
+      jQuery(this).show()
+    }
+  });
+});
+</script>

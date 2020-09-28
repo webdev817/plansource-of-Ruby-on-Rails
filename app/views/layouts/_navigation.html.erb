@@ -1,0 +1,50 @@
+<nav class="navigation navigation-dark">
+
+  <div class="container">
+    <ul>
+      <div class="pull-right">
+        <% if user_signed_in? %>
+          <% if current_user.admin? %>
+            <li>
+              <%= link_to 'Admin', users_path %>
+            </li>
+          <% end %>
+
+          <li class="<%= controller_name == "registrations" && action_name == "edit" ? "active" : "" %>">
+          <%= link_to 'My Account', edit_user_registration_path %>
+          </li>
+
+          <li class="<%= controller_name == "app" ? "active" : "" %>">
+          <%= link_to 'My Jobs', app_path %>
+          </li>
+
+          <li class="<%= controller_name == "reports" ? "active" : "" %>">
+          <%= link_to 'Reports', reports_path %>
+          </li>
+
+          <li>
+            <% if current_user %>
+              <%= link_to "Logout (#{current_user.first_name})", destroy_user_session_path, :method=>'delete' %>
+            <% else %>
+              <%= link_to "Logout", destroy_user_session_path, :method=>'delete' %>
+            <% end %>
+          </li>
+        <% else %>
+          <li class="<%= controller_name == "sessions" && action_name == "new" ? "active" : "" %>">
+          <%= link_to 'Login', new_user_session_path %>
+          </li>
+        <% end %>
+      </div>
+    </ul>
+
+  </div>
+</select>
+
+</nav>
+
+
+<div class="brand-container">
+  <div class="container">
+      <h3><%= link_to (image_tag "logo.png"), !current_user ? root_path : app_path, :class => 'logo' %></h3>
+  </div>
+</div>

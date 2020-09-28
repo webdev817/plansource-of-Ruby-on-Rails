@@ -1,0 +1,93 @@
+<div class="report section container printable printable-margin-20">
+  <% if @rfi %>
+      <div class="row">
+        <div class="col-sm-offset-3 col-sm-6">
+          <h1>RFI - <%= @rfi.rfi_num %></h1>
+          <p><strong>Date Submitted:</strong> <%= basic_date_format(@rfi.created_at) %></p>
+
+          <% if @rfi.user.nil? %>
+            <p><strong>Submitted By:</strong> Not Available</p>
+          <% else %>
+            <p><strong>Submitted By:</strong> <%= @rfi.user.full_name %></p>
+          <% end %>
+
+          <% if !@rfi.assigned_user.nil? %>
+            <p><strong>Assigned To:</strong> <%= @rfi.assigned_user.full_name %></p>
+          <% end %>
+
+          <p><strong>Subject:</strong> <%= @rfi.subject %></p>
+          <p><strong>Notes:</strong>
+            <% (@rfi.notes || "").split("\n").each do |part| %>
+              <%= part %>
+              <br>
+            <% end %>
+          </p>
+
+          <p><strong>Attachments:</strong></p>
+
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>Filename</th>
+              </tr>
+            </thead>
+            <tbody id="asi-attachments">
+              <% @rfi.attachments.each do |attachment| %>
+                <tr class="file-preview">
+                  <td><%= attachment.filename %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+  <% end %>
+  <div class="row">
+    <div class="col-sm-offset-3 col-sm-6">
+      <h1>ASI - <%= @asi.asi_num %></h1>
+      <p><strong>Date Submitted:</strong> <%= basic_date_format(@asi.date_submitted || @asi.created_at) %></p>
+
+      <% if @asi.user.nil? %>
+        <p><strong>Response By:</strong> Not Available</p>
+      <% else %>
+        <p><strong>Response By:</strong> <%= @asi.user.full_name %></p>
+      <% end %>
+
+      <% if @asi.rfi.nil? and !@asi.assigned_user.nil? %>
+        <p><strong>Assigned To:</strong> <%= @asi.assigned_user.full_name %></p>
+      <% end %>
+
+      <p><strong>Status:</strong> <%= @asi.status %></p>
+      <p><strong>Plan Sheets Affected:</strong> <%= @asi.plan_sheets_affected %></p>
+      <p><strong>Included in Addendum #:</strong> <%= @asi.in_addendum %></p>
+      <p><strong>Subject:</strong> <%= @asi.subject %></p>
+      <p><strong>Notes:</strong>
+        <% (@asi.notes || "").split("\n").each do |part| %>
+          <%= part %>
+          <br>
+        <% end %>
+      </p>
+
+      <p><strong>Attachments:</strong></p>
+
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>Filename</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody id="asi-attachments">
+          <% @asi.attachments.each do |attachment| %>
+            <tr class="file-preview">
+              <td><%= attachment.filename %></td>
+              <td><%= attachment.description %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>window.print();</script>

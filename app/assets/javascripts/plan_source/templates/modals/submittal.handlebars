@@ -1,0 +1,316 @@
+<div class="modal-wrapper">
+  <div class="overlay"></div>
+  <div class="dialog box box-border" style="width: 600px;">
+    <div class="header">
+      <div class="pull-right">
+        <button type="button" {{action "close"}} class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      {{#if isNew }}
+        <h4 class="modal-title">Shop Drawing Submission Form</h4>
+        <p>Please make sure all information is complete and accurate.</p>
+      {{else}}
+        {{#if isInReview }}
+          <h4 class="modal-title">Shop Drawing Review Form</h4>
+          <p>Please make sure all information is complete and accurate.</p>
+        {{else}}
+          <h4 class="modal-title">Shop Drawing Submittal</h4>
+        {{/if}}
+      {{/if}}
+    </div>
+    <div class="body">
+      <div class="control-group">
+        <div class="controls">
+          <div class="form-inline">
+            <span class="help-inline"></span>
+          </div>
+        </div>
+      </div>
+      {{#unless isNew}}
+        <div class="row margin-bottom">
+          <div class="col-sm-4">
+            <p>Date Submitted:</p>
+          </div>
+          <div class="col-sm-8">
+            <div class="control-group">
+              <div class="controls">
+                <input disabled class="form-control" id="submittal-date-submitted" value="{{ unbound dateSubmitted }}">
+                <span class="help-inline"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row margin-bottom">
+          <div class="col-sm-4">
+            <p>Submitted By:</p>
+          </div>
+          <div class="col-sm-8">
+            <div class="control-group">
+              <div class="controls">
+                <input disabled class="form-control" id="submittal-submitted-by" value="{{ unbound user.first_name }} {{ unbound user.last_name }}">
+                <span class="help-inline"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      {{/unless}}
+      <div class="row margin-bottom">
+        <div class="col-sm-4">
+          <p>Project:</p>
+        </div>
+        <div class="col-sm-8">
+          <div class="control-group">
+            <div class="controls">
+              <input disabled class="form-control" id="submittal-project" value="{{ unbound this.job.name }}">
+              <span class="help-inline"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row margin-bottom">
+        <div class="col-sm-4">
+          <p>CSI Code (if known):</p>
+        </div>
+        <div class="col-sm-8">
+          <div class="control-group">
+            <div class="controls">
+              {{#if isAccepted }}
+                {{#admin}}
+                  <input class="form-control" id="submittal-csi-code" value="{{ unbound data.csi_code }}">
+                {{else}}
+                  <input disabled class="form-control" id="submittal-csi-code" value="{{ unbound data.csi_code }}">
+                {{/admin}}
+              {{else}}
+                <input class="form-control" id="submittal-csi-code" value="{{ unbound data.csi_code }}">
+              {{/if}}
+              <span class="help-inline"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row margin-bottom">
+        <div class="col-sm-4">
+          <p>Submittal Description:</p>
+        </div>
+        <div class="col-sm-8">
+          <div class="control-group">
+            <div class="controls">
+              {{#if isAccepted }}
+                {{#admin}}
+                  <input class="form-control" id="submittal-description" value="{{ unbound data.description }}" placeholder="Give your submittal a name">
+                {{else}}
+                  <input disabled class="form-control" id="submittal-description" value="{{ unbound data.description }}">
+                {{/admin}}
+              {{else}}
+                <input class="form-control" id="submittal-description" value="{{ unbound data.description }}" placeholder="Give your submittal a name">
+              {{/if}}
+              <span class="help-inline error">{{ errors.data.description }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      {{#if isInReview }}
+        <div class="row margin-bottom">
+          <div class="col-sm-4">
+            <p>Belongs To:</p>
+          </div>
+          <div class="col-sm-8">
+            <div class="control-group">
+              <div class="controls">
+                <select class="form-control" id="submittal-job-id">
+                  {{#if plan_id}}
+                    <option disabled>Select A Shop Drawing</option>
+                  {{else}}
+                    <option disabled selected>Select A Shop Drawing</option>
+                  {{/if}}
+
+                  {{#each shopPlans}}
+                    <option value="{{unbound this.id}}">{{unbound this.tab}} - {{unbound this.plan_name}}</option>
+                  {{/each}}
+                </select>
+                  {{#if plan_id}}
+                    <script>
+                        document.getElementById("submittal-job-id").value = {{unbound plan_id}};
+                    </script>
+                  {{/if}}
+                <span class="help-inline error">{{ errors.plan_id }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      {{/if }}
+      <div class="row margin-bottom">
+        <div class="col-sm-12">
+          <p>Notes:</p>
+          <div class="control-group">
+            <div class="controls">
+              {{#if isAccepted }}
+                {{#admin}}
+                  <textarea style="width: 100%; max-width: 100%; height: 150px; padding: 10px;" placeholder="Tell us about your submittal, e.g. Is this a partial or full submittal?, Where is it used?, How soon do you need a response?, etc" id="submittal-notes">{{ unbound data.notes }}</textarea>
+                {{else}}
+                  <textarea disabled style="width: 100%; max-width: 100%; height: 150px; padding: 10px;" placeholder="Tell us about your submittal, e.g. Is this a partial or full submittal?, Where is it used?, How soon do you need a response?, etc" id="submittal-notes">{{ unbound data.notes }}</textarea>
+                {{/admin}}
+              {{else}}
+                <textarea style="width: 100%; max-width: 100%; height: 150px; padding: 10px;" placeholder="Tell us about your submittal, e.g. Is this a partial or full submittal?, Where is it used?, How soon do you need a response?, etc" id="submittal-notes">{{ unbound data.notes }}</textarea>
+              {{/if}}
+              <span class="help-inline"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row margin-bottom">
+        <div class="col-sm-12">
+          {{#if isNew }}
+            <p>Attachments (select to remove):</p>
+          {{else}}
+            <p>Attachments (select to download):</p>
+          {{/if}}
+          <div class="control-group">
+            <div id="submittal-attachments">
+              {{#each attachments}}
+                <p class="file-preview">
+                  <a href="/api/submittals/download_attachment/{{unbound this.id}}" title="{{unbound this.filename}}">{{truncate this.filename}}</a>
+                </p>
+              {{/each}}
+            </div>
+            {{#if isNew }}
+              <div id="attachments-dnd" class="dropzone"></div>
+              <div id="submittal-progress-bar" class="progress" style="display: none;">
+                <div class="progress-bar" style="width: 0%;"></div>
+              </div>
+            {{/if}}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <div class="row margin-bottom">
+        <div class="col-sm-6">
+          {{#if isInReview }}
+            <a class="button button-red" {{action "promptDeleteSubmittal" target=controller}} >Delete</a>
+          {{else}}
+            {{#admin}}
+              <a class="button button-red" {{action "promptDeleteSubmittal" target=controller}} >Delete</a>
+            {{/admin}}
+          {{/if}}
+        </div>
+        <div class="col-sm-6 text-right">
+          {{#if isNew }}
+            <a class="button" {{action "close" }} >Cancel</a>
+            <a id="submit-submittal-button" class="button button-blue" {{ action "submitSubmittal" target=controller}}>Submit</a>
+          {{else}}
+            <a class="button" {{ action "close" }} >Cancel</a>
+
+            {{#if isInReview }}
+              <a class="button button-green" {{ action "updateSubmittal" true target=controller }}>Accept</a>
+              <a class="button button-blue" {{ action "updateSubmittal" false target=controller }}>Save</a>
+            {{else}}
+              {{#admin}}
+                <a class="button button-blue" {{ action "updateSubmittal" true target=controller }}>Save</a>
+              {{/admin}}
+            {{/if}}
+          {{/if}}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+$("#share-search-input-modal").keyup(function () {
+  var filter = jQuery(this).val();
+  jQuery("#contacts-list tbody tr").each(function () {
+    if (jQuery(this).text().search(new RegExp(filter, "i")) < 0) {
+      jQuery(this).hide();
+    } else {
+      jQuery(this).show()
+    }
+  });
+});
+</script>
+
+{{#if isNew}}
+  <script>
+    Dropzone.options.attachmentsDnd= {
+        method: 'post',
+        autoQueue: false,
+        timeout: 300000,
+        autoProcessQueue: false,
+        paramName: function (n) { return "file"; }, 
+        maxFilesize: 20, // MB
+        uploadMultiple: true,
+        createImageThumbnails: false,
+        // Hide the previews.  We'll make our own.
+        previewTemplate: '<div style="display:none"></div>',
+        dictDefaultMessage: 'Drop files here or click to upload.',
+    };
+
+    PlanSource.dropzone = new Dropzone("div#attachments-dnd", {
+      url: "https://s3.amazonaws.com/PlanSource",
+    });
+
+    $("#submittal-attachments").delegate(".file-preview", "click", function (e) {
+      $(e.target).remove();
+    });
+
+    PlanSource.dropzone.on("addedfile", function (file) {
+        $.ajax({
+            url: "/api/uploads/presign",
+            type: 'POST',
+            data : { 
+                filename: file.name,
+                prefix: "attachments",
+            },
+        }).then(function(data, t, xhr){
+            PlanSource.dropzone.options.url = data.url;
+            file.postData = data.fields;
+            if (!data.error) PlanSource.dropzone.processFile(file);
+        });
+    });
+
+    PlanSource.dropzone.on("sending", function (file, xhr, formData) {
+        xhr.timeout = 99999999;
+
+        var $button = $("#submit-submittal-button");
+        $button.prop("disabled", true);
+        $button.text("Uploading...");
+
+        var postData = file.postData;
+        for (var k in postData) {
+            formData.append(k, postData[k]);
+        }
+    });
+
+    PlanSource.dropzone.on("complete", function (file, responseData) {
+        var $button = $("#submit-submittal-button");
+        var $submittalProgressBar = $("#submittal-progress-bar");
+
+        if (!PlanSource.dropzone.getUploadingFiles().length) {
+            $submittalProgressBar.hide();
+            $button.prop("disabled", false);
+            $button.text("Submit");
+        }
+    });
+
+    PlanSource.dropzone.on("uploadprogress", function (file, progress) {
+        var $submittalProgressBar = $("#submittal-progress-bar");
+        var $submittalProgressBarProgress = $submittalProgressBar.find(".progress-bar");
+        var uploadingCount = PlanSource.dropzone.files.length;
+        var totalProgress = 0;
+
+        for(var i = 0; i < uploadingCount; i++) {
+            totalProgress += PlanSource.dropzone.files[i].upload.progress;
+        }
+
+        var percent = totalProgress / uploadingCount;
+        $submittalProgressBarProgress.css("width", percent + "%");
+        $submittalProgressBar.show();
+    });
+
+    PlanSource.dropzone.on("success", function (file, responseData) {
+        $("#submittal-attachments").append([
+            '<p class="file-preview" data-id="' + file.postData.key.split("/")[1] + '">',
+                file.name,
+            '</p>',
+        ].join(""));
+    });
+  </script>
+{{/if}}

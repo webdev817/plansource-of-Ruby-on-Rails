@@ -1,0 +1,34 @@
+<div class="row margin-bottom">
+  <div class="col-sm-12">
+    <p>Attachments:</p>
+
+    <div class="control-group">
+      {{#if getRFI.isNew}}
+        {{partial "modals/rfi_dropzone_partial"}}
+      {{/if}}
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>Filename</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="rfi-attachments">
+          {{#if getRFI}}
+            {{#each getRFI.attachments}}
+              <tr class="file-preview">
+                <td title="{{unbound this.filename}}">{{ truncate this.filename }}</td>
+                <td>
+                  <span class="pull-right">
+                    <a href="/api/rfis/download_attachment/{{unbound this.id}}">Download</a>
+                  </span>
+                </td>
+              </tr>
+            {{/each}}
+          {{/if}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+

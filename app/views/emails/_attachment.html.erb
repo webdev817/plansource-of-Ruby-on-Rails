@@ -1,0 +1,9 @@
+<tr>
+  <td>
+  <% attachment.each do |item| %>
+
+    <%= link_to item.filename, emails_download_path %>
+  <% end %>
+  </td>
+  
+</tr>

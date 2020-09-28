@@ -1,0 +1,178 @@
+<div class="modal fade bs-example-modal-lg" data-backdrop="static" style="display:block" data-keyboard="false" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" {{action "closeModal"}} class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<a class="button button-blue pull-right plan-save-button" {{action "editPlan" target=controller}}>Save</a>
+				<h4 class="modal-title">Edit {{this.plan_name}}</h4>
+			</div>
+			<div class="modal-body">
+				{{partial "modals/edit_plan_partial"}}
+				<hr>
+				<div class="modal-section">
+					<h4 class="title">Upload a file</h4>
+                    <input type="hidden" name="new-file-id" id="new-file-id">
+                    <input type="hidden" name="new-file-original-filename" id="new-file-original-filename">
+                    <div class="control-group">
+                        <div class="controls">
+                              <p id="plan-filename" class="bold"></p> 
+                              <div id="plan-dnd" class="dropzone"></div>
+                              <div id="plan-progress-bar" class="progress" style="display: none;">
+                                <div class="progress-bar" style="width: 0%;"></div>
+                              </div>
+                              <p class="bold">Don't forget to click the "Save" button to add this file.</p>
+                        </div>
+                    </div>
+					<hr>
+				</div>
+				<div class="modal-section">
+					<h4 class="title">Plan History</h4>
+					{{#if planRecordsProp}}
+					<p>
+						Select past plan to hide it from displaying in a plan's details.
+					</p>
+					{{/if}}
+					<div class="container-fluid">
+						{{#each planRecordsProp}}
+						<div class="row" style="margin-bottom:15px">
+							<div class="col-sm-8">
+								<input class="archived-box" style="margin-right:10px;" type="checkbox" data-id="{{unbound id}}" {{unbound archivedToChecked}} >
+								<a href="/api/download/{{unbound this.id}}?type=plan_record" title="{{unbound filename}}"><span style="font-size:110%;margin-right:10px" class="glyphicon glyphicon-download"></span></a>
+                                <a style="word-wrap:break-word" href="/api/plans/embedded/{{unbound this.id}}?type=plan_record" target="_blank">{{this.filename}}</a>
+							</div>
+							<div class="col-sm-4" style="padding-left:30px;">
+								<div> changed {{date created_at }}</div>
+							</div>
+						</div>
+						{{else}}
+						<div>
+							This plan has no plan history.
+						</div>
+						{{/each}}
+					</div>
+				</div>
+				<div class="modal-footer">
+					<div class="buttons">
+						<a class="button button-blue plan-save-button" {{action "editPlan" target=controller}}>Save</a>
+						<a class="button" {{action 'closeModal'}}>Cancel</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+    Dropzone.options.planDnd = {
+        method: 'post',
+        autoQueue: false,
+        timeout: 300000,
+        autoProcessQueue: false,
+        paramName: function (n) { return "file"; }, 
+        maxFilesize: 20, // MB
+        uploadMultiple: false,
+        createImageThumbnails: false,
+        // Hide the previews.  We'll make our own.
+        previewTemplate: '<div style="display:none"></div>',
+        dictDefaultMessage: 'Drop files here or click to upload.',
+    };
+
+    PlanSource.dropzone = new Dropzone("div#plan-dnd", {
+      url: "https://s3.amazonaws.com/PlanSource",
+    });
+
+    PlanSource.dropzone.on("addedfile", function (file) {
+        $.ajax({
+            url: "/api/uploads/presign",
+            type: 'POST',
+            data : { 
+                filename: file.name,
+                prefix: "plans",
+            },
+        }).then(function(data, t, xhr){
+            PlanSource.dropzone.options.url = data.url;
+            file.postData = data.fields;
+            if (!data.error) PlanSource.dropzone.processFile(file);
+        });
+    });
+
+    PlanSource.dropzone.on("sending", function (file, xhr, formData) {
+        xhr.timeout = 99999999;
+
+        var $button = $(".plan-save-button");
+        $button.prop("disabled", true);
+        $button.text("Uploading...");
+
+        var postData = file.postData;
+        for (var k in postData) {
+            formData.append(k, postData[k]);
+        }
+    });
+
+    PlanSource.dropzone.on("complete", function (file, responseData) {
+        var $button = $(".plan-save-button");
+        var $progressBar = $("#plan-progress-bar");
+
+        if (!PlanSource.dropzone.getUploadingFiles().length) {
+            $progressBar.hide();
+            $button.prop("disabled", false);
+            $button.text("Save");
+        }
+    });
+
+    PlanSource.dropzone.on("uploadprogress", function (file, progress) {
+        var $progressBar = $("#plan-progress-bar");
+        var $progressBarProgress = $progressBar.find(".progress-bar");
+        var uploadingCount = PlanSource.dropzone.files.length;
+        var totalProgress = 0;
+
+        for(var i = 0; i < uploadingCount; i++) {
+            totalProgress += PlanSource.dropzone.files[i].upload.progress;
+        }
+
+        var percent = totalProgress / uploadingCount;
+        $progressBarProgress.css("width", percent + "%");
+        $progressBar.show();
+    });
+
+    PlanSource.dropzone.on("success", function (file, responseData) {
+        $("#plan-filename").text("(New File) " + file.name);
+        $("#new-file-id").val(file.postData.key.split("/")[1]);
+        $("#new-file-original-filename").val(file.name);
+    });
+
+
+$('#myModal').modal('show');
+$('#myModal').on('shown.bs.modal', function () {
+	$('#edit-plan-name').focus();
+});
+
+$("#myModal").on('hide.bs.modal', function(){
+	// console.log(PlanSource.EditPlanController.send(''));
+});
+
+var initSelect = $('#init-select-status').val();
+$('#edit-select-status').val(initSelect);
+
+var initSelectTab = $('#init-select-tab').val();
+$('#edit-select-tab').val(initSelectTab);
+
+var formatCSI = function(thisObj) {
+	var current = thisObj.val().split('');
+
+	if (current.length > 2){
+		if (current[2] != " "){
+			current.splice(2, 0, " ");
+		}
+	}
+	if (current.length > 5){
+		if (current[5] != " "){
+			current.splice(5, 0, " ");
+		}
+	}
+	thisObj.val(current.join(""));
+}
+
+$('#edit-plan-csi').keyup(function(){
+	formatCSI($(this));
+});
+</script>

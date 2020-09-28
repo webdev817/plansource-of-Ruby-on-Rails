@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    </head>
+    <body>
+      <h1><%= @subject %></h1>
+
+      <p><strong>Job:</strong> <%= @shop.job.name %>
+
+      <% if !@assigned_user.nil? %>
+        <p><strong>Assignee:</strong> <%= @assigned_user.full_name %>
+        <p><strong>Assignee Email:</strong> <%= @assigned_user.email %>
+      <% end %>
+
+      <p><strong>Shop Name:</strong> <%= @shop.plan_name %>
+      <p><strong>CSI Code:</strong> <%= @shop.csi %>
+      <p><strong>Description:</strong> <%= @shop.description  %>
+
+      <br>
+
+      <p>
+        <%= link_to "View Shops for this job.", app_url(host: ENV["SITE_URL"]) + "#/jobs/#{@shop.job.id}/shops" %>
+      </p>
+    </body>
+</html>

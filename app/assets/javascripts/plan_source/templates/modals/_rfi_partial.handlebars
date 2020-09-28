@@ -1,0 +1,122 @@
+<div class="dialog box box-border" style="width: 600px;">
+  <div class="header">
+    <p class="title">RFI - {{rfi_num}}</p>
+  </div>
+
+  <div class="body">
+    <div class="row margin-bottom">
+      <div class="col-sm-4"><p>Date Submitted:</p></div>
+      <div class="col-sm-8">
+        <div class="control-group">
+          <div class="controls">
+            <input disabled class="form-control" id="rfi-date-submitted" value="{{ unbound dateSubmitted }}">
+            <span class="help-inline"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row margin-bottom">
+      <div class="col-sm-4"><p>Submitted By:</p></div>
+      <div class="col-sm-8">
+        <div class="control-group">
+          <div class="controls">
+            <input disabled class="form-control" id="rfi-submitted-by" value="{{ unbound submittedBy }}">
+            <span class="help-inline"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row margin-bottom">
+      <div class="col-sm-4">
+        <p>Response Requested:</p>
+      </div>
+      <div class="col-sm-8">
+        <div class="control-group">
+          <div class="controls">
+            {{#if canEditRFI}}
+              <input class="form-control" id="rfi-response-requested" value="{{ unbound targetResponse }}">
+            {{else}}
+              <input disabled class="form-control" id="rfi-response-requested" value="{{ unbound targetResponse }}">
+            {{/if}}
+            <span class="help-inline"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row margin-bottom">
+      <div class="col-sm-4">
+        <p>Assigned To:</p>
+      </div>
+      <div class="col-sm-8">
+        <div class="control-group">
+          <div class="controls">
+            <input disabled class="form-control" id="rfi-assigned-to" value="{{ unbound assignedTo }}">
+            <span class="help-inline"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row margin-bottom">
+      <div class="col-sm-12">
+        <p>Subject:</p>
+        <div class="control-group">
+          <div class="controls">
+            {{#if canEditRFI}}
+              <input class="form-control" id="rfi-subject" value="{{ unbound subject }}">
+            {{else}}
+              <input disabled class="form-control" id="rfi-subject" value="{{ unbound subject }}">
+            {{/if}}
+            <span class="help-inline">{{rfiErrors.subject}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row margin-bottom">
+      <div class="col-sm-12">
+        <p>Notes:</p>
+        <div class="control-group">
+          <div class="controls">
+            {{#if canEditRFI}}
+              <textarea style="width: 100%; max-width: 100%; height: 150px; padding: 10px;" placeholder="Tell us about your RFI, etc" id="rfi-notes">{{ unbound notes }}</textarea>
+            {{else}}
+              <textarea disabled style="width: 100%; max-width: 100%; height: 150px; padding: 10px;" placeholder="Tell us about your RFI, etc" id="rfi-notes">{{ unbound notes }}</textarea>
+            {{/if}}
+            <span class="help-inline">{{rfiErrors.notes}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {{partial "modals/rfi_attachments_partial"}}
+  </div>
+  <div class="footer">
+    <div class="buttons">
+      <a class="button" {{action "close"}}>Cancel</a>
+      {{#if canDeleteRFI}}
+        <a id="delete-rfi-button" class="button button-red" {{action "deleteRFI" target=controller}}>Delete</a>
+      {{/if}}
+
+      {{#if canEditAssignedTo}}
+        <a id="assign-rfi-button" class="button button-green" {{action "openAssignRFIModal" model}}>Assign To</a>
+      {{/if}}
+
+      {{#if canEditRFI}}
+        <a id="submit-rfi-button" class="button button-blue" {{action "save" target=controller}}>Save</a>
+      {{/if}}
+    </div>
+  </div>
+</div>
+
+{{#if canEditRFI}}
+  <script>
+    // We use a setTimeout to make sure #rfi-response-requested is rendered.
+    setTimeout(function () {
+      var rfiPicker = new Pikaday({ field: $("#rfi-response-requested")[0], format: 'll' });
+    }, 0);
+  </script>
+{{/if}}

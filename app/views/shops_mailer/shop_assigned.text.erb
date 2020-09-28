@@ -1,0 +1,13 @@
+<%= @subject %>
+=========================
+
+Job: <%= @shop.job.name %>
+
+<% if !@assigned_user.nil? %>
+Assignee: <%= @assigned_user.full_name %>
+Assignee Email: <%= @assigned_user.email %>
+
+<% end %>
+Shop Name: <%= @shop.plan_name %>
+CSI Code: <%= @shop.csi %>
+Description: <%= @shop.description %>

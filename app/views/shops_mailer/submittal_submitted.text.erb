@@ -1,0 +1,18 @@
+<%= @subject %>
+=========================
+
+Job: <%= @submittal.job.name %>
+
+Submitter: <%= @submittal.user.full_name %>
+Submitter Email: <%= @submittal.user.email %>
+CSI Code: <%= @submittal.data[:csi_code] %>
+Description: <%= @submittal.data[:description] %>
+Notes: <%= @submittal.data[:notes] %>
+
+Attachments:
+<% @submittal.attachments.each do |attachment| %>
+<%= attachment.filename %>
+<% end %>
+<% if @submittal.attachments.empty? %>
+No Attachments
+<% end %>

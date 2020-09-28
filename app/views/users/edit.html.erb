@@ -1,0 +1,93 @@
+<% content_for :title, "Edit User" %>
+<div class="section">
+	<div class="container" style="margin-bottom:30px">
+		<h2>Edit User</h2>
+                <%= link_to "Delete", user_path(@user), :data => { :confirm => "Are you sure?" }, :method => :delete, class: "btn" %>
+                <br>
+                <br>
+		<div class="row">
+			<div class="col-sm-4">
+				<%= simple_form_for(@user, url: user_path(@user), as: :user, :html => {:class => 'form-vertical' }) do |f| %>
+				  <%= f.error_notification %>
+				  <%= display_base_errors @user %>
+				  <%= f.input :first_name, :autofocus => true, :required => true,:input_html => {:class=>"form-control" } %>
+				  <%= f.input :last_name, :required => true,:input_html => {:class=>"form-control" } %>
+          		  <%= f.input :company, :required => true,:input_html => {:class=>"form-control" } %>
+				  <%= f.input :email, :required => true,:input_html => {:class=>"form-control" } %>
+				  <%= f.input :password, :required => false, :input_html => {:class=>"form-control" } %>
+				  <%= f.input :type, :required => true, as: :select, collection: ["Admin", "Manager", "Viewer"],:input_html => {:class=>"form-control" }%>
+				  <%= f.input :can_share_link, :required => true, as: :boolean %>
+				  <%= f.input :can_delete_plan, :required => true, as: :boolean %>
+
+                  <h3>Which list should this user show up in?</h3>
+				  <%= f.input :show_in_rfi_manager_list, :required => true, as: :boolean %>
+				  <%= f.input :show_in_assign_rfi_list, :required => true, as: :boolean %>
+				  <%= f.input :show_in_shops_manager_list, :required => true, as: :boolean %>
+				  <%= f.input :show_in_assign_shops_list, :required => true, as: :boolean %>
+
+				  <%= f.button :submit, "Save Changes", :class => "button button-blue" %>
+                  <%= link_to "Cancel", :back %>
+				<% end %>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="section">
+	<div class="container" style="margin-bottom:30px">
+		<h2>Shared Jobs</h2>
+		<div class="table-responsive">
+			<%= form_tag batch_shares_user_path(@user) do |f| %>
+				<table class="table table-hover">
+					<thead>
+						<th>Job Name</th>
+						<th>Pre-Development | Plan | Shops | Support | Calcs | Photos</th>
+						<th>Shared</th>
+					</thead>
+					<tbody>
+						<% @shared_jobs.each do |shared_job| %>
+							<tr>
+								<td>
+									<%= shared_job.name %>
+								</td>
+								<td>
+									<%= hidden_field_tag "shared_jobs[#{shared_job.id}][7]", 0 %>
+									<%= check_box_tag "shared_jobs[#{shared_job.id}][7]", 1, prev_dev?(shared_job), :class => "share-box", "data-place" => "7" %>
+									Pre-Dev
+									<%= hidden_field_tag "shared_jobs[#{shared_job.id}][2]", 0 %>
+									<%= check_box_tag "shared_jobs[#{shared_job.id}][2]", 1, plans?(shared_job), :class => "share-box", "data-place" => "2" %>
+									Plans
+									<%= hidden_field_tag "shared_jobs[#{shared_job.id}][1]", 0 %>
+									<%= check_box_tag "shared_jobs[#{shared_job.id}][1]", 1, shops?(shared_job), :class => "share-box", "data-place" => "1" %>
+									Shops
+									<%= hidden_field_tag "shared_jobs[#{shared_job.id}][0]", 0 %>
+									<%= check_box_tag "shared_jobs[#{shared_job.id}][0]", 1, support?(shared_job), :class => "share-box", "data-place" => "0" %>
+									Support
+									<%= hidden_field_tag "shared_jobs[#{shared_job.id}][3]", 0 %>
+									<%= check_box_tag "shared_jobs[#{shared_job.id}][3]", 1, calcs?(shared_job), :class => "share-box", "data-place" => "3" %>
+									Calcs
+									<%= hidden_field_tag "shared_jobs[#{shared_job.id}][4]", 0 %>
+									<%= check_box_tag "shared_jobs[#{shared_job.id}][4]", 1, photos?(shared_job), :class => "share-box", "data-place" => "4" %>
+									Photos
+									<%= hidden_field_tag "shared_jobs[#{shared_job.id}][5]", 0 %>
+									<%= check_box_tag "shared_jobs[#{shared_job.id}][5]", 1, renderings?(shared_job), :class => "share-box", "data-place" => "5" %>
+									Renderings
+									<%= hidden_field_tag "shared_jobs[#{shared_job.id}][6]", 0 %>
+									<%= check_box_tag "shared_jobs[#{shared_job.id}][6]", 1, client?(shared_job), :class => "share-box", "data-place" => "6" %>
+									Client
+								</td>
+								<td>
+									<%= check_box_tag "shared_jobs[#{shared_job.id}][is_shared]", true, true %>
+								</td>
+							</tr>
+						<% end %>
+					</tbody>
+				</table>
+				<%= submit_tag "Save Changes", :class => "button button-blue" %>
+				<%= link_to "Cancel", :back %>
+			<% end %>
+		</div>
+	</div>
+</div>
+<script>
+
+</script>

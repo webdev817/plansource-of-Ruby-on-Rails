@@ -1,0 +1,39 @@
+{{#if jobController.model.finish_selections_url}}
+  <p>
+  <a href="{{unbound jobController.model.finish_selections_url}}" class="button button-green" target="_blank">Finish Selections</a>
+  </p>
+{{/if}}
+
+<div class="table-responsive" id="plan-table">
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>Unit</th>
+        <th>Description</th>
+        <th>Updated</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each controller}}
+        <tr>
+          <td>{{unbound name}}</td>
+          <td title="{{unbound description}}">{{truncate description}}</td>
+          <td>{{date updated_at}}</td>
+          <td>
+            <ul style="padding-left:0px;" class="controls text-right unstyled">
+              <li><a href="{{unbound url}}" target="_blank">View</a></li>
+              <li><a href="{{unbound floor_plan_url}}" target="_blank">Floor Plan</a></li>
+            </ul>
+          </td>
+        </tr>
+      {{else}}
+        <tr>
+          <td>
+            No renderings found...
+          </td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>

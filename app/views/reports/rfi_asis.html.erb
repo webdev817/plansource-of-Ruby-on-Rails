@@ -1,0 +1,85 @@
+<% content_for :title, "RFI/ASI Report" %>
+
+<div class="section printable">
+	<div class="container" style="margin-bottom:30px">
+    <h1>RFI/ASI Report (<%= basic_date_format(DateTime.now) %>)</h1>
+    <p class="printable-hidden">
+      <%= link_to "Change Options", rfi_asis_report_jobs_path %>
+    </p>
+    <p class="printable-hidden">
+      <a href="#" class="button button-blue" onclick="window.print();">Print Report</a>
+    </p>
+
+		<div class="row">
+			<div class="col-sm-12">
+        <% @jobs.each do |job| %>
+          <div class="printable-section">
+            <h2><%= job.name %></h2>
+
+            <table class="table table-hover printable-section">
+              <thead>
+                <tr>
+                  <th>RFI</th>
+                  <th>ASI</th>
+                  <th>Status</th>
+                  <th>Target Response</th>
+                  <th>Days Past Due</th>
+                  <th>Assigned To</th>
+                  <th>Subject</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% job.rfis.order("rfi_num DESC").each do |rfi|  %>
+                  <% asi = rfi.asi %>
+                  <% # Status is "Open" if no ASI for RFI %>
+                  <% next if !@statuses.include?(asi.nil? ? "Open" : asi.status) %>
+                  <% next if !@assigned_user_ids.include?(rfi.assigned_user_id.to_s || "") %>
+
+                  <tr>
+                    <td><%= rfi.rfi_num %></td>
+                    <td><%= rfi.asi.nil? ? "" : rfi.asi.asi_num %></td>
+                    <td><%= asi.nil? ? "Open" : asi.status %></td>
+                    <td><%= basic_date_format(rfi.due_date) %></td>
+                    <td><%= rfi.days_past_due %></td>
+                    <% if rfi.assigned_user %>
+                      <td title="<%= rfi.assigned_user.full_name %>">
+                        <%= rfi.assigned_user.first_name %>
+                      </td>
+                    <% else %>
+                      <td></td>
+                    <% end %>
+                    <td title="<%= rfi.subject %>"><%= rfi.subject %></td>
+                  </tr>
+                <% end %>
+
+                <% job.unlinked_asis.order("asi_num DESC").each do |asi|  %>
+                  <% # Status is "Open" if no ASI for RFI %>
+                  <% next if !@statuses.include?(asi.status) %>
+                  <% next if !@assigned_user_ids.include?(asi.assigned_user_id.to_s || "") %>
+
+                  <tr>
+                    <td>-</td>
+                    <td><%= asi.asi_num %></td>
+                    <td><%= asi.status %></td>
+                    <td></td>
+                    <td></td>
+                    <% if asi.assigned_user %>
+                      <td title="<%= asi.assigned_user.full_name %>">
+                        <%= asi.assigned_user.first_name %>
+                      </td>
+                    <% else %>
+                      <td></td>
+                    <% end %>
+                    <td title="<%= asi.subject %>"><%= asi.subject %></td>
+                  </tr>
+                <% end %>
+
+              </tbody>
+            </table>
+          </div>
+        <% end %>
+			</div>
+		</div>
+	</div>
+</div>
+

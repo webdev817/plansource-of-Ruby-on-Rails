@@ -1,0 +1,95 @@
+<div id="asi-attachments-dnd" class="dropzone"></div>
+<div id="asi-progress-bar" class="progress" style="display: none;">
+  <div class="progress-bar" style="width: 0%;"></div>
+</div>
+
+<script>
+    Dropzone.options.asiAttachmentsDnd = {
+        method: 'post',
+        autoQueue: false,
+        timeout: 300000,
+        autoProcessQueue: false,
+        paramName: function (n) { return "file"; }, 
+        maxFilesize: 20, // MB
+        uploadMultiple: true,
+        createImageThumbnails: false,
+        // Hide the previews.  We'll make our own.
+        previewTemplate: '<div style="display:none"></div>',
+        dictDefaultMessage: 'Drop files here or click to upload.',
+    };
+
+    PlanSource.asiDropzone = new Dropzone("div#asi-attachments-dnd", {
+        url: "https://s3.amazonaws.com/PlanSource",
+    });
+
+    $("#asi-attachments").delegate(".remove", "click", function (e) {
+        $(e.target.parentNode.parentNode.parentNode).remove();
+    });
+
+    PlanSource.asiDropzone.on("addedfile", function (file) {
+        $.ajax({
+            url: "/api/uploads/presign",
+            type: 'POST',
+            data : { 
+                filename: file.name,
+                prefix: "attachments",
+            },
+        }).then(function(data, t, xhr){
+            PlanSource.asiDropzone.options.url = data.url;
+            file.postData = data.fields;
+            if (!data.error) PlanSource.asiDropzone.processFile(file);
+        });
+    });
+
+    PlanSource.asiDropzone.on("sending", function (file, xhr, formData) {
+        xhr.timeout = 99999999;
+
+        var $button = $("#submit-asi-button");
+        $button.prop("disabled", true);
+        $button.text("Uploading...");
+
+        var postData = file.postData;
+        for (var k in postData) {
+            formData.append(k, postData[k]);
+        }
+    });
+
+    PlanSource.asiDropzone.on("complete", function (file, responseData) {
+        var $button = $("#submit-asi-button");
+        var $asiProgressBar = $("#asi-progress-bar");
+
+        if (!PlanSource.asiDropzone.getUploadingFiles().length) {
+            $asiProgressBar.hide();
+            $button.prop("disabled", false);
+            $button.text("Save");
+        }
+    });
+
+  PlanSource.asiDropzone.on("uploadprogress", function (file, progress) {
+    var $asiProgressBar = $("#asi-progress-bar");
+    var $asiProgressBarProgress = $asiProgressBar.find(".progress-bar");
+    var fileCount = PlanSource.asiDropzone.files.length;
+    var totalProgress = 0;
+
+    for(var i = 0; i < fileCount; i++) {
+      totalProgress += PlanSource.asiDropzone.files[i].upload.progress;
+    }
+
+    $asiProgressBarProgress.css("width", totalProgress / fileCount + "%");
+    $asiProgressBar.show();
+  });
+
+  PlanSource.asiDropzone.on("success", function (file, responseData) {
+      $("#asi-attachments").append([
+        '<tr class="file-preview" data-upload-id="' + file.postData.key.split("/")[1] + '">',
+          '<td>' + file.name + '</td>',
+          '<td><input class="file-preview-description" placeholder="Description"></td>',
+          '<td>',
+            '<span class="pull-right">',
+              '<a class="remove">Remove</a>',
+            '</span>',
+          '</td>',
+        '</tr>',
+      ].join(""));
+  });
+</script>

@@ -1,0 +1,23 @@
+<div class="modal-wrapper">
+	<div class="overlay"></div>
+	<div class="dialog box box-border">
+		<div class="header">
+			<p class="title">Edit your photo's description.</p>
+		</div>
+		<div class="body">
+			<div class="control-group">
+				<div class="controls">
+					<p>Enter a new description for this photo.</p>
+					{{ view PlanSource.TextField placeholder="Photo description" class="form-control" focus=true id="edit-photo-description" modelAttr="description" }}
+					<span class="help-inline"></span>
+				</div>
+			</div>
+		</div>
+		<div class="footer">
+			<div class="buttons">
+				<a class="button button-blue" {{action "updatePhoto" target=controller}} >Change</a>
+				<a class="button" {{action "close"}}>Cancel</a>
+			</div>
+		</div>
+	</div>
+</div>

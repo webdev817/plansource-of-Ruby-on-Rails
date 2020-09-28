@@ -1,0 +1,37 @@
+<div class="modal-wrapper">
+	<div class="overlay"></div>
+
+  <div class="modal-container" style="max-width: 1300px;">
+    {{#if getRFI}}
+      {{#if getRFI.isNew}}
+        {{partial "modals/new_rfi_partial"}}
+      {{else}}
+        <div class="split">
+          {{partial "modals/rfi_partial"}}
+        </div>
+      {{/if}}
+    {{else}}
+      <div class="split">
+        {{partial "modals/no_rfi_partial"}}
+      </div>
+    {{/if}}
+
+    {{#if getASI}}
+      {{#if getASI.isNew}}
+        <div class="split">
+          {{partial "modals/new_asi_partial"}}
+        </div>
+      {{else}}
+        <div class="split">
+          {{partial "modals/asi_partial"}}
+        </div>
+      {{/if}}
+    {{else}}
+      {{#unless getRFI.isNew}}
+        <div class="split">
+          {{partial "modals/no_asi_partial"}}
+        </div>
+      {{/unless}}
+    {{/if}}
+  </div>
+</div>

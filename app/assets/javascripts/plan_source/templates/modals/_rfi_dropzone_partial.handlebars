@@ -1,0 +1,96 @@
+<div id="rfi-attachments-dnd" class="dropzone"></div>
+<div id="rfi-progress-bar" class="progress" style="display: none;">
+  <div class="progress-bar" style="width: 0%;"></div>
+</div>
+
+<script>
+    Dropzone.options.rfiAttachmentsDnd = {
+        method: 'post',
+        autoQueue: false,
+        timeout: 300000,
+        autoProcessQueue: false,
+        paramName: function (n) { return "file"; }, 
+        maxFilesize: 20, // MB
+        uploadMultiple: true,
+        createImageThumbnails: false,
+        // Hide the previews.  We'll make our own.
+        previewTemplate: '<div style="display:none"></div>',
+        dictDefaultMessage: 'Drop files here or click to upload.',
+    };
+
+    PlanSource.rfiDropzone = new Dropzone("div#rfi-attachments-dnd", {
+        url: "https://s3.amazonaws.com/PlanSource",
+    });
+
+    $("#rfi-attachments").delegate(".remove", "click", function (e) {
+        $(e.target.parentNode.parentNode.parentNode).remove();
+    });
+
+    PlanSource.rfiDropzone.on("addedfile", function (file) {
+        $.ajax({
+            url: "/api/uploads/presign",
+            type: 'POST',
+            data : { 
+                filename: file.name,
+                prefix: "attachments",
+            },
+        }).then(function(data, t, xhr){
+            PlanSource.rfiDropzone.options.url = data.url;
+            file.postData = data.fields;
+            if (!data.error) PlanSource.rfiDropzone.processFile(file);
+        });
+    });
+
+    PlanSource.rfiDropzone.on("sending", function (file, xhr, formData) {
+        xhr.timeout = 99999999;
+
+        var $button = $("#submit-rfi-button");
+        $button.prop("disabled", true);
+        $button.text("Uploading...");
+
+        var postData = file.postData;
+        for (var k in postData) {
+            formData.append(k, postData[k]);
+        }
+    });
+
+    PlanSource.rfiDropzone.on("complete", function (file, responseData) {
+        var $button = $("#submit-rfi-button");
+        var $rfiProgressBar = $("#rfi-progress-bar");
+
+        if (!PlanSource.rfiDropzone.getUploadingFiles().length) {
+            $rfiProgressBar.hide();
+            $button.prop("disabled", false);
+            $button.text("Submit RFI");
+        }
+    });
+
+  PlanSource.rfiDropzone.on("uploadprogress", function (file, progress) {
+    var $rfiProgressBar = $("#rfi-progress-bar");
+    var $rfiProgressBarProgress = $rfiProgressBar.find(".progress-bar");
+    var fileCount = PlanSource.rfiDropzone.files.length;
+    var totalProgress = 0;
+
+    for(var i = 0; i < fileCount; i++) {
+      totalProgress += PlanSource.rfiDropzone.files[i].upload.progress;
+    }
+
+    $rfiProgressBarProgress.css("width", totalProgress / fileCount + "%");
+    $rfiProgressBar.show();
+  });
+
+  PlanSource.rfiDropzone.on("success", function (file, responseData) {
+  $("#rfi-attachments").append([
+    '<tr class="file-preview" data-upload-id="' + file.postData.key.split("/")[1] + '">',
+      '<td>',
+        file.name,
+      '</td>',
+      '<td>',
+        '<span class="pull-right">',
+          '<a class="remove">Remove</a>',
+        '</span>',
+      '</td>',
+    '</tr>',
+  ].join(""));
+  });
+</script>

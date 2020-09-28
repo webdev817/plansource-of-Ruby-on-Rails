@@ -1,0 +1,17 @@
+<%= @subject %>
+=========================
+
+Job: <%= @rfi.job.name %>
+
+RFI Name: <%= @rfi.subject %>
+Submitter: <%= @rfi.user.first_name %> <%= @rfi.user.last_name %>
+Submitter Email: <%= @rfi.user.email %>
+RFI Notes: <%= @rfi.notes %>
+
+Attachments:
+<% @rfi.attachments.each do |attachment| %>
+<%= attachment.filename %>
+<% end %>
+<% if @rfi.attachments.empty? %>
+No Attachments
+<% end %>

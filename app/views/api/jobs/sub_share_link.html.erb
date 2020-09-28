@@ -1,0 +1,144 @@
+<div class="section">
+	<div class="container">
+		<div class="row">
+			<div class="col-xs-12">
+				<h2><%= @job.name %> Plans</h2>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-8">
+				<!-- Future navbar here -->
+				<ul class="nav nav-tabs">
+					<li class="active"><a data-toggle="tab" href="#tab-plans">Plans</a></li>
+					<li><a data-toggle="tab" href="#tab-addendums">Addendums</a></li>
+				</ul>
+			</div>
+			<div class="col-xs-4">
+				<div id="share-search-form" class="share-search-form">
+					<input placeholder="Search..." class="form-control form-smaller form-control-padding pull-right" id="share-search-input"/>
+				</div>
+			</div>
+		</div>
+		<div class="tab-content" style="margin-top:20px">
+			<div id="tab-plans" class="tab-pane fade in active">
+				<div class="table-responsive" id="plan-table">
+					<table class="table table-responsive table-hover">
+						<thead>
+							<th>#</th>
+							<th>Plan Name</th>
+							<th>Updated</th>
+							<th>Download File</th>
+							<th class="text-right">Controls</th>
+						</thead>
+						<tbody>
+							<% @job.get_plans_for_tabs_with_plan_num("Plans").each do |plan, i|  %>
+							<tr>
+								<td><%= plan.plan_num %></td>
+								<td>
+									<p><%= plan.plan_name %></p>
+								</td>
+								<td><%= plan.plan_updated_at ? plan.plan_updated_at.strftime("%B %d, %Y") : "" %></td>
+								<td>
+									<% if !plan.plan.nil? %>
+									<a href="/api/download/<%= plan.id %><%= "?share_token=#{@share_link.token}" if not @share_link.nil? %>"><%= plan.filename.truncate(35) %></a>
+									<% end %>
+								</td>
+								<td>
+									<ul class="controls pull-right unstyled">
+										<% if !plan.plan.nil? %>
+										<li><a href="/api/plans/embedded/<%= plan.id %><%= "?share_token=#{@share_link.token}" if not @share_link.nil? %>" target="_blank">View</a></li>
+										<% end %>
+									</ul>
+								</td>
+							</tr>
+							<% end %>
+							<% if @job.plans.empty? %>
+							<tr>
+								<td>
+									<p>The owner of this plan has not added any plans.</p>
+								</td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<% end %>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div id="tab-addendums" class="tab-pane fade in">
+				<div class="table-responsive" id="plan-table">
+					<table class="table table-responsive table-hover">
+						<thead>
+							<th>#</th>
+							<th>Plan Name</th>
+							<th>Updated</th>
+							<th>Download File</th>
+							<th class="text-right">Controls</th>
+						</thead>
+						<tbody>
+							<% @job.get_plans_for_tabs_with_plan_num("Addendums").each do |plan|  %>
+							<tr>
+								<td><%= plan.plan_num %></td>
+								<td>
+									<p><%= plan.plan_name %></p>
+								</td>
+								<td><%= plan.plan_updated_at ? plan.plan_updated_at.strftime("%B %d, %Y") : "" %></td>
+								<td>
+									<% if !plan.plan.nil? %>
+									<a href="/api/download/<%= plan.id %><%= "?share_token=#{@share_link.token}" if not @share_link.nil? %>"><%= plan.filename.truncate(35) %></a>
+									<% end %>
+								</td>
+								<td>
+									<ul class="controls pull-right unstyled">
+										<% if !plan.plan.nil? %>
+										<li><a href="/api/plans/embedded/<%= plan.id %><%= "?share_token=#{@share_link.token}" if not @share_link.nil? %>" target="_blank">View</a></li>
+										<% end %>
+									</ul>
+								</td>
+							</tr>
+							<% end %>
+							<% if @job.plans.empty? %>
+							<tr>
+								<td>
+									<p>The owner of this plan has not added any plans.</p>
+								</td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<% end %>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+// This script should be modularized instead of copied everywhere
+$("#share-search-input").on('input', function() {
+	var filter = jQuery(this).val();
+	jQuery("table tr").not('thead tr').each(function () {
+		if (jQuery(this).text().search(new RegExp(filter, "i")) < 0) {
+			jQuery(this).hide();
+		} else {
+			jQuery(this).show()
+		}
+	});
+});
+</script>
+<script>
+// This script takes the Quill JSON in the table and converts it to simple text in place
+$(".quill-description").each(function(i, e){
+	var tempCont = document.createElement("div");
+	var quil = new Quill(tempCont);
+	if(e.innerText != ""){
+		quil.setContents(JSON.parse(e.innerText));
+		e.innerText = quil.getText();
+	}
+});
+</script>

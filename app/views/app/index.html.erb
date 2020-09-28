@@ -1,0 +1,27 @@
+<% content_for :title, "App" %>
+<% content_for :head do %>
+	<%= javascript_include_tag "plan_source" %>
+<% end %>
+<div class="loading">
+	<p class="loading-text">Loading... <span class="loading-percent">100</span>%</p>
+</div>
+<div class="section">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<div id="ember-job-app"></div>
+			</div>
+		</div>
+		<!-- <div id="ember-job-app" class="box box-border"></div> -->
+	</div>
+</div>
+
+<iframe class="downloader hidden"></iframe>
+
+<script type="text/javascript">
+	user = "<%= current_user.full_name %>";
+	user_id = <%= current_user.id %>;
+	PlanSource._user_type = "<%= current_user.type %>";
+	PlanSource._can_share_link = <%= current_user.can_share_link %>;
+	PlanSource._can_delete_plan = <%= current_user.can_delete_plan %>;
+</script>

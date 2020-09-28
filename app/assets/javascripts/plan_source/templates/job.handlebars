@@ -1,0 +1,305 @@
+<h2>{{name}} {{#if archived}}(Archived){{/if}}</h2>
+<div class="row">
+  <div class="col-sm-12">
+    <p>{{#linkTo 'jobs'}}Back to your jobs{{/linkTo}}</p>
+    {{#unless isShared}}
+      {{#if archived}}
+        {{#manager}}
+          <a href="#" {{action "unarchiveJob"}} class="button button-green">Unarchive</a>
+        {{/manager}}
+      {{else}}
+        {{#manager}}
+          <a href="#" {{action "archiveJob"}} class="button button-red">Archive</a>
+
+          {{#unless isASITab}}
+            {{#unless isShopsTab}}
+                {{#unless isSpecialInspectionsTab}}
+              <a href="#" {{action "openAddPlanModal"}} class="button button-green">+ Add Plan</a>
+                {{/unless}}
+            {{/unless}}
+          {{/unless}}
+
+          <a href="#" {{action "openSubShareLinkModal"}} class="button button-blue">Share Link</a>
+
+        {{/manager}}
+
+        {{#if subscribed}}
+          <a href="#" {{action "unsubscribeJob"}} class="button button-default">Unsubscribe</a>
+        {{else}}
+          <a href="#" {{action "subscribeJob"}} class="button button-default">Subscribe</a>
+        {{/if}}
+      {{/if}}
+    {{else}}
+      {{#if isPlansTab}}
+        {{#can_share_link}}
+          <a href="#" {{action "openSubShareLinkModal"}} class="button button-blue">Share Link</a>
+        {{/can_share_link}}
+      {{/if}}
+
+      {{#if subscribed}}
+        <a href="#" {{action "unsubscribeJob"}} class="button button-default">Unsubscribe</a>
+      {{else}}
+        <a href="#" {{action "subscribeJob"}} class="button button-default">Subscribe</a>
+      {{/if}}
+    {{/unless}}
+    <input placeholder="Search..." class="form-control form-smaller form-control-padding pull-right" style="max-width:250px" id="search-input"/>
+  </div>
+</div>
+
+<nav id="jobs-nav" class="jobs-controls">
+    {{#if canViewPreDevelopmentTab}}
+        {{#if isPreDevelopmentTab}}
+            <a class="active">Pre-Development</a>
+        {{else}}
+          {{#linkTo "job.pre_development" }}Pre-Development{{/linkTo}}
+        {{/if}}
+    {{/if}}
+
+    {{#if canViewPlansTab}}
+        {{#if isPlansTab}}
+            <a class="active">Plans</a>
+        {{else}}
+          {{#linkTo "job.plans" }}Plans{{/linkTo}}
+        {{/if}}
+    {{/if}}
+
+    {{#if canViewPlansTab}}
+        {{#if isAddendumsTab}}
+            <a class="active">Addendums</a>
+        {{else}}
+            {{#linkTo "job.addendums" }}Addendums{{/linkTo}}
+        {{/if}}
+    {{/if}}
+
+    {{#if canViewPlansTab}}
+        {{#if isASITab}}
+            <a class="active">RFI/ASI</a>
+        {{else}}
+            {{#linkTo "job.rfi_asi" }}RFI/ASI{{/linkTo}}
+        {{/if}}
+    {{/if}}
+
+    {{#if canViewShopsTab}}
+        {{#if isShopsTab}}
+          {{#if model.isMyJob}}
+
+            {{#if submittalCount}}
+              <a class="active">Shops ({{ submittalCount }})</a>
+            {{else}}
+              <a class="active">Shops</a>
+            {{/if}}
+
+          {{else}}
+            {{#if model.amIShopDrawingManager}}
+
+              {{#if submittalCount}}
+                <a class="active">Shops ({{ submittalCount }})</a>
+              {{else}}
+                <a class="active">Shops</a>
+              {{/if}}
+
+            {{else}}
+              <a class="active">Shops</a>
+            {{/if}}
+          {{/if}}
+        {{else}}
+          {{#if model.isMyJob}}
+
+            {{#if submittalCount}}
+              {{#linkTo "job.shops" }}Shops ({{ submittalCount }}){{/linkTo}}
+            {{else}}
+              {{#linkTo "job.shops" }}Shops{{/linkTo}}
+            {{/if}}
+
+          {{else}}
+            {{#if model.amIShopDrawingManager}}
+
+              {{#if submittalCount}}
+                {{#linkTo "job.shops" }}Shops ({{ submittalCount }}){{/linkTo}}
+              {{else}}
+                {{#linkTo "job.shops" }}Shops{{/linkTo}}
+              {{/if}}
+
+            {{else}}
+              {{#linkTo "job.shops" }}Shops{{/linkTo}}
+            {{/if}}
+          {{/if}}
+        {{/if}}
+    {{/if}}
+
+    {{#if canViewSpecialInspectionsTab}}
+        {{#if isSpecialInspectionsTab}}
+          {{#if model.isMyJob}}
+
+            {{#if submittalCount}}
+              <a class="active">Special Inspections ({{ submittalCount }})</a>
+            {{else}}
+              <a class="active">Special Inspections</a>
+            {{/if}}
+
+          {{else}}
+            {{#if model.amIShopDrawingManager}}
+
+              {{#if submittalCount}}
+                <a class="active">Special Inspections ({{ submittalCount }})</a>
+              {{else}}
+                <a class="active">Special Inspections</a>
+              {{/if}}
+
+            {{else}}
+              <a class="active">Special Inspections</a>
+            {{/if}}
+          {{/if}}
+        {{else}}
+          {{#if model.isMyJob}}
+
+            {{#if submittalCount}}
+              {{#linkTo "job.special_inspections" }}Special Inspections ({{ submittalCount }}){{/linkTo}}
+            {{else}}
+              {{#linkTo "job.special_inspections" }}Special Inspections{{/linkTo}}
+            {{/if}}
+
+          {{else}}
+            {{#if model.amIShopDrawingManager}}
+
+              {{#if submittalCount}}
+                {{#linkTo "job.special_inspections" }}Special Inspections ({{ submittalCount }}){{/linkTo}}
+              {{else}}
+                {{#linkTo "job.special_inspections" }}Special Inspections{{/linkTo}}
+              {{/if}}
+
+            {{else}}
+              {{#linkTo "job.special_inspections" }}Special Inspections{{/linkTo}}
+            {{/if}}
+          {{/if}}
+        {{/if}}
+    {{/if}}
+
+    {{#if canViewConsultantsTab}}
+        {{#if isConsultantsTab}}
+            <a class="active">Support</a>
+        {{else}}
+            {{#linkTo "job.support" }}Support{{/linkTo}}
+        {{/if}}
+    {{/if}}
+
+    {{#if canViewClientTab}}
+        {{#if isClientTab}}
+            <a class="active">Client</a>
+        {{else}}
+            {{#linkTo "job.client" }}Client{{/linkTo}}
+        {{/if}}
+    {{/if}}
+
+    {{#if canViewCalcsTab}}
+        {{#if isCalcTab}}
+            <a class="active">Calcs & Misc</a>
+        {{else}}
+            {{#linkTo "job.calcs" }}Calcs & Misc{{/linkTo}}
+        {{/if}}
+    {{/if}}
+
+    {{#if canViewPhotosTab}}
+        {{#if isPhotosTab}}
+            <a class="active">Photos</a>
+        {{else}}
+            {{#linkTo "job.photos" }}Photos{{/linkTo}}
+        {{/if}}
+    {{/if}}
+
+    {{#if canViewRenderingsTab}}
+        {{#if isRenderingsTab}}
+            <a class="active">FinishVisionVR&trade;</a>
+        {{else}}
+            {{#linkTo "job.renderings" }}FinishVisionVR&trade;{{/linkTo}}
+        {{/if}}
+    {{/if}}
+</nav>
+
+{{outlet}}
+
+<script>
+  var readyTableLinks = function(){
+    $("#plan-table tbody tr").not(".clickable").off("click");
+    $("#plan-table tbody tr").not(".clickable").click(function(e){
+      if($(this).hasClass("table-row-button")){
+        if (e.target.nodeName.toUpperCase() != "A" && e.target.nodeName.toUpperCase() != "SPAN") { // Make sure normal links still function
+          console.log(this.getAttribute("data-link"));
+          window.open(this.getAttribute("data-link"), '_blank');
+        }
+      }
+    });
+    $("#plan-table tbody tr").not(".clickable").addClass("clickable");
+  }
+
+  // When the tree changes, we need to make sure the rows can still be selected
+  $("#plan-table").bind("DOMSubtreeModified", function(){
+
+    readyTableLinks();
+  });
+
+  $(document).ready(function(){
+    readyTableLinks();
+  });
+</script>
+<script>
+  function toggleResults(filter){
+    // Search the table view
+    jQuery("table tr").not('thead tr').each(function () {
+        var $el = jQuery(this);
+        var searchText = "";
+        // Construct search text from title attr of cell or text inside
+        $el.find('td').each(function () {
+          var $cell = jQuery(this);
+          searchText += ($cell.attr("title") || $cell.text());
+        });
+
+        var isResult = false;
+        var filterParts = filter.split(/\s+/g);
+
+        if (searchText.search(new RegExp(filter, "i")) >= 0) isResult = true;
+        for (var i = 0; i < filterParts.length; i++) {
+            var f = filterParts[i];
+            if (!f.length) continue;
+            if (searchText.search(new RegExp(f, "i")) >= 0) isResult = true;
+        }
+
+        if (isResult) { $el.show(); } else { $el.hide() }
+    });
+
+    
+
+    jQuery(".grid-item").each(function () {
+        var $el = jQuery(this);
+        var searchText = "";
+        // Construct search text from title attr of cell or text inside
+        $el.find('.overlay p').each(function () {
+          var $cell = jQuery(this);
+          searchText += ($cell.attr("title") || $cell.text());
+        });
+
+        var isResult = false;
+        var filterParts = filter.split(/\s+/g);
+
+        if (searchText.search(new RegExp(filter, "i")) >= 0) isResult = true;
+        for (var i = 0; i < filterParts.length; i++) {
+            var f = filterParts[i];
+            if (!f.length) continue;
+            if (searchText.search(new RegExp(f, "i")) >= 0) isResult = true;
+        }
+
+        if (isResult) { $el.show(); } else { $el.hide() }
+    });
+  }
+
+  $("#search-input").keyup(function () {
+      var filter = jQuery(this).val();
+      toggleResults(filter);
+  });
+
+  $('#jobs-nav').bind('DOMSubtreeModified', function(e) {
+      // console.log("Triggered")
+      var filter = $("#search-input").val();
+      toggleResults(filter);
+  });
+</script>

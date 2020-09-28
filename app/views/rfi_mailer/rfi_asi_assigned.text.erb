@@ -1,0 +1,30 @@
+<%= @subject %>
+=========================
+
+Job: <%= (@rfi || @asi).job.name %>
+
+<% if !@rfi.nil? %>
+RFI Name: <%= @rfi.subject %>
+RFI Notes: <%= @rfi.notes %>
+
+RFI Attachments:
+  <% @rfi.attachments.each do |attachment| %>
+<%= link_to attachment.filename, api_rfi_download_attachment_url(attachment.id, host: ENV["SITE_URL"]) %>
+  <% end %>
+  <% if @rfi.attachments.empty? %>
+No Attachments
+  <% end %>
+<% end %>
+
+<% if !@asi.nil? %>
+ASI Name: <%= @asi.subject %>
+ASI Notes: <%= @asi.notes %>
+
+ASI Attachments:
+  <% @asi.attachments.each do |attachment| %>
+<%= attachment.filename %>
+  <% end %>
+  <% if @asi.attachments.empty? %>
+No Attachments
+  <% end %>
+<% end %>

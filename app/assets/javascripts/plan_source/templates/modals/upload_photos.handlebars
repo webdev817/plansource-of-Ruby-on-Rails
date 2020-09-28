@@ -1,0 +1,280 @@
+<div class="modal-wrapper">
+  <div class="overlay"></div>
+  <div class="dialog box box-border" style="width: 700px;">
+    <div class="header">
+      <div class="pull-right">
+        <button type="button" {{action "close"}} class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <h4 class="modal-title">Upload Photos</h4>
+      <p>After uploading, pick a date for all photos or manually edit each.</p>
+    </div>
+    <div class="body">
+      <div class="control-group">
+        <div class="controls">
+          <div class="form-inline">
+            <span class="help-inline error" id="upload-error"></span>
+          </div>
+        </div>
+      </div>
+      <div id="photos-dnd" class="dropzone"></div>
+
+      <div id="photos-list" class="scroller-large" style="display: none;">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>Photo Name</th>
+              <th>Date Taken</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="uploaded-photos">
+          </tbody>
+        </table>
+      </div>
+
+      <div id="batch-set-date-container" class="row margin-bottom" style="display: none;">
+        <div class="col-sm-12 text-right">
+          <span><button class="button" id="set-all-dates">Set All Dates</button></span>
+          <span><button class="button" id="fill-dates">Fill Empty Dates</button></span>
+        </div>
+      </div>
+
+      <div id="photos-progress-bar" class="progress" style="display: none;">
+        <div class="progress-bar" style="width: 0%;"></div>
+      </div>
+
+    </div>
+    <div class="footer">
+      <div class="row margin-bottom">
+        <div class="col-sm-6">
+        </div>
+        <div class="col-sm-6 text-right">
+          <a class="button" {{action "close" }} >Cancel</a>
+          <a id="submit-photos-button" class="button button-blue" style="display: none;" {{ action "submitPhotos" target=controller}}>Submit</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  var batchPicker = null;
+  var picker = null;
+
+  Dropzone.options.photosDnd = {
+    method: 'post',
+    autoQueue: false,
+    timeout: 300000,
+    autoProcessQueue: false,
+    // Always 'file' no matter the index
+    paramName: function (n) { return "file"; }, 
+    maxFilesize: 20, // MB
+    uploadMultiple: true,
+    createImageThumbnails: false,
+    // Hide the previews.  We'll make our own.
+    previewTemplate: '<div style="display:none"></div>',
+    dictDefaultMessage: 'Drop files here or click to upload.',
+    accept: function(file, done) {
+      // Should match lambda job
+      var VALID_EXT = ['png', 'jpg', 'jpeg', 'tiff', 'gif'];
+      var extension = file.name.split('.').pop();
+
+      if (VALID_EXT.indexOf(extension.toLowerCase()) < 0) {
+        done("Not a valid photo format.");
+      } else {
+        done();
+      }
+    }
+  };
+
+  PlanSource.dropzone = new Dropzone("div#photos-dnd", {
+      url: "https://s3.amazonaws.com/PlanSource",
+  });
+
+  $("#uploaded-photos").delegate(".remove", "click", function (e) {
+    $(e.target.parentNode.parentNode.parentNode).remove();
+    var $remainingUploads = $("#uploaded-photos .file-preview");
+
+    // If no photos remaining, reset modal for uploads
+    if (!$remainingUploads.length) {
+      var $button = $("#submit-photos-button");
+      var $dropzone = $("#photos-dnd");
+      var $photosList = $("#photos-list");
+      var $batchSetDateContainer = $("#batch-set-date-container");
+      var $uploadError = $("#upload-error");
+
+      // Clear errors when everything is reset
+      $uploadError.text("");
+      $batchSetDateContainer.hide();
+      $button.hide();
+      $dropzone.show();
+      $photosList.hide();
+    }
+  });
+
+  $("#uploaded-photos").delegate(".choose-date", "click", function (e) {
+    var $link = $(e.target);
+    var $tableCell = $(e.target.parentNode);
+    var $input = $('<input type="text" class="form-control" id="picker-input">');
+
+    $link.hide();
+    $tableCell.append($input);
+
+    new Pikaday({
+      field: $("#picker-input")[0],
+      onSelect: function (date) {
+        $link.data("date-taken", date.toJSON());
+        $link.text(moment(date).format('ll'));
+      },
+      onClose: function (e) {
+        $input.remove();
+        $link.show();
+      }
+    });
+
+    // Something weird happens with onClose getting called if you don't wait
+    // for the input to render before clicking it.
+    setTimeout(function () {
+      $input.click();
+    }, 0);
+  });
+
+  $("#set-all-dates, #fill-dates").click(function (e) {
+    var $button = $(e.target);
+    var $container = $(e.target.parentNode);
+    var $input = $('<input type="text" class="form-control" id="picker-input">');
+    var mode = $button.attr("id") === "set-all-dates" ? "set" : "fill";
+
+    $button.prop("disabled", true);
+    $container.append($input);
+
+    new Pikaday({
+      field: $("#picker-input")[0],
+      onSelect: function (date) {
+        $("#uploaded-photos .file-preview").each(function (i, row) {
+          var $filePreviewRow = $(row);
+          var $chooseDateLink = $filePreviewRow.find(".choose-date");
+
+          // Skip if fill mode and date is already set.
+          if (mode === "fill" && $chooseDateLink.data("date-taken")) return;
+
+          $chooseDateLink.data("date-taken", date.toJSON());
+          $chooseDateLink.text(moment(date).format('ll'));
+        });
+      },
+      onClose: function (e) {
+        $input.remove();
+        $button.prop("disabled", false);
+      }
+    });
+
+    // Something weird happens with onClose getting called if you don't wait
+    // for the input to render before clicking it.
+    setTimeout(function () {
+      $input.click();
+    }, 0);
+  });
+
+    PlanSource.dropzone.on("addedfile", function (file) {
+        $.ajax({
+            url: "/api/uploads/presign",
+            type: 'POST',
+            data : { 
+                filename: file.name,
+                prefix: "photos",
+            },
+        }).then(function(data, t, xhr){
+            PlanSource.dropzone.options.url = data.url;
+            file.postData = data.fields;
+            if (!data.error) PlanSource.dropzone.processFile(file);
+        });
+    });
+
+    PlanSource.dropzone.on("sending", function (file, xhr, formData) {
+        xhr.timeout = 99999999;
+
+        var $button = $("#submit-photos-button");
+        var $dropzone = $("#photos-dnd");
+        var $photosList = $("#photos-list");
+        var $batchSetDateContainer = $("#batch-set-date-container");
+
+        $button.show();
+        $button.prop("disabled", true);
+        $button.text("Uploading...");
+        $dropzone.hide();
+        $photosList.show();
+        $batchSetDateContainer.hide();
+
+        var postData = file.postData;
+        for (var k in postData) {
+            formData.append(k, postData[k]);
+        }
+    });
+
+    PlanSource.dropzone.on("complete", function (file) {
+        if (!file.accepted) {
+            $("#upload-error").text("Some files you uploaded don't appear to be photos and won't be uploaded.");
+        return;
+        }
+
+        var $button = $("#submit-photos-button");
+        var $batchSetDateContainer = $("#batch-set-date-container");
+        var $photosProgressBar = $("#photos-progress-bar");
+
+        if (!PlanSource.dropzone.getUploadingFiles().length) {
+            $photosProgressBar.hide();
+            $batchSetDateContainer.show();
+            $button.prop("disabled", false);
+            $button.text("Submit");
+
+            // Add picker if picker doesn't exist
+            if (!batchPicker) {
+                batchPicker= new Pikaday({
+                    field: $("#batch-set-date-input")[0],
+                    onSelect: function(date) {
+                        console.log(date);
+                    }
+                });
+            }
+        }
+    });
+
+  PlanSource.dropzone.on("uploadprogress", function (file, progress) {
+    var $photosProgressBar = $("#photos-progress-bar");
+    var $photosProgressBarProgress = $photosProgressBar.find(".progress-bar");
+    var fileCount = PlanSource.dropzone.files.length;
+    var totalProgress = 0;
+
+    for(var i = 0; i < fileCount; i++) {
+      totalProgress += PlanSource.dropzone.files[i].upload.progress;
+    }
+
+    $photosProgressBarProgress.css("width", totalProgress / fileCount + "%");
+    $photosProgressBar.show();
+  });
+
+    // On start, remove upload area.
+    // On success for a file, add element to list with ID and date from server response
+    // Allow for one date field to update all or an edit date for each entry
+    // On update all, update date on element.
+    // On submit photos, grab all info from HTML data attrs then upload to server.
+    PlanSource.dropzone.on("success", function (file, responseData) {
+        $("#uploaded-photos").append([
+            '<tr class="file-preview" data-id="' + file.postData.key.split("/")[1] + '">',
+                '<td>',
+                    file.name,
+                '</td>',
+                '<td>',
+                    '<a class="choose-date" data-date-taken="">',
+                        'Pick a date',
+                    '</a>',
+                '</td>',
+                '<td>',
+                    '<span class="pull-right">',
+                        '<a class="remove">Remove</a>',
+                    '</span>',
+                '</td>',
+            '</tr>',
+        ].join(""));
+    });
+</script>

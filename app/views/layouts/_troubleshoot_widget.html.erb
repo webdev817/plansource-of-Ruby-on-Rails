@@ -1,0 +1,59 @@
+<% content_for :head do %>
+	<%= javascript_include_tag "troubleshoot_widget" %>
+	<%= stylesheet_link_tag "troubleshoot_widget" %>
+<% end %>
+
+<div id="troubleshoot-widget">
+  <div class="message">
+    <p>Having issues?</p>
+  </div>
+  <div class="circle">
+    <i class="icon-exclamation"></i>
+  </div>
+</div>
+
+<div id="troubleshoot-form-overlay" class="modal-wrapper">
+	<div class="overlay"></div>
+	<div class="dialog box box-border">
+		<div class="header">
+      <div class="pull-right">
+        <button id="troubleshoot-form-close" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <p class="title">Having Issues?</p>
+      <p>Fill in the form below and we'll take a look :)</p>
+		</div>
+		<div class="body">
+			<p class="form-label">What were you trying to do?</p>
+			<div class="control-group">
+				<div class="controls">
+          <span class="help-inline error" id="troubleshoot-form-error"></span>
+          <textarea id="troubleshoot-form-problem" placeholder="I was trying to upload files for a job..."></textarea>
+				</div>
+			</div>
+      <div class="control-group">
+        <div class="controls">
+          <p class="form-label">Include any files you were trying to upload.</p>
+          <span class="help-inline error" id="troubleshoot-upload-error"></span>
+          <div id="troubleshoot-files-dnd" class="dropzone"></div>
+          <table id="troubleshoot-files-table" class="table table-hover">
+            <thead>
+              <tr>
+                <th>Filename</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="troubleshoot-uploaded-files">
+            </tbody>
+          </table>
+        </div>
+      </div>
+		</div>
+		<div class="footer">
+			<div class="buttons">
+				<a id="troubleshoot-form-submit" class="button button-blue">Submit</a>
+				<a id="troubleshoot-form-cancel" class="button">Cancel</a>
+			</div>
+		</div>
+	</div>
+</div>
+

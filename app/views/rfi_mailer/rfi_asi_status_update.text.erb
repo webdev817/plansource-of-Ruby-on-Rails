@@ -1,0 +1,29 @@
+<%= @subject %>
+=========================
+
+Job: <%= @job.name %>
+
+<% if !@rfi.nil? %>
+RFI Num: <%= @rfi.rfi_num %>
+RFI Subject: <%= @rfi.subject %>
+RFI Notes: <%= @rfi.notes %>
+RFI Attachments:
+<% @rfi.attachments.each do |attachment| %>
+<%= attachment.filename %>
+<% end %>
+<% if @rfi.attachments.empty? %>
+No Attachments
+<% end %>
+<% end %>
+
+ASI Num: <%= @asi.asi_num%>
+ASI Subject: <%= @asi.subject %>
+ASI Notes: <%= @asi.notes %>
+
+ASI Attachments:
+<% @asi.attachments.each do |attachment| %>
+<%= attachment.filename %>
+<% end %>
+<% if @asi.attachments.empty? %>
+No Attachments
+<% end %>

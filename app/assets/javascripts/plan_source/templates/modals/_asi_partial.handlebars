@@ -1,0 +1,175 @@
+<div class="dialog box box-border" style="width: 600px;">
+  <div class="header">
+    <p class="title">ASI - {{asi_num}}</p>
+  </div>
+
+  <div class="body">
+    <div class="row margin-bottom">
+      <div class="col-sm-4"><p>Date Submitted:</p></div>
+      <div class="col-sm-8">
+        <div class="control-group">
+          <div class="controls">
+            {{#if canEditASI}}
+              <input class="form-control" id="asi-date-submitted" data-has-date-submitted="{{ unbound boolean getASI.date_submitted }}" value="{{ unbound getASI.dateSubmitted }}">
+            {{else}}
+              <input disabled class="form-control" id="asi-date-submitted" data-has-date-submitted="{{ unbound boolean getASI.date_submitted }}" value="{{ unbound getASI.dateSubmitted }}">
+            {{/if}}
+            <span class="help-inline"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row margin-bottom">
+      <div class="col-sm-4"><p>Response By:</p></div>
+      <div class="col-sm-8">
+        <div class="control-group">
+          <div class="controls">
+            <input disabled class="form-control" id="asi-submitted-by" value="{{ unbound getASI.submittedBy }}">
+            <span class="help-inline"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {{#unless getRFI}}
+      <div class="row margin-bottom">
+        <div class="col-sm-4">
+          <p>Assigned To:</p>
+        </div>
+        <div class="col-sm-8">
+          <div class="control-group">
+            <div class="controls">
+              <input disabled class="form-control" id="asi-assigned-to" value="{{ unbound getASI.assignedTo }}">
+              <span class="help-inline"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    {{/unless}}
+
+    <div class="row margin-bottom">
+      <div class="col-sm-4"><p>Status:</p></div>
+      <div class="col-sm-8">
+        <div class="control-group">
+          <div class="controls">
+            {{#if canEditASI}}
+              <select class="form-control" id="asi-status" value="{{ unbound status }}">
+                <option value="Open">Open</option>
+                <option value="Closed">Closed</option>
+              </select>
+            {{else}}
+              <select disabled class="form-control" id="asi-status" value="{{ unbound status }}">
+                <option value="Open">Open</option>
+                <option value="Closed">Closed</option>
+              </select>
+            {{/if}}
+            <span class="help-inline"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row margin-bottom">
+      <div class="col-sm-4"><p>Plan Sheets Affected:</p></div>
+      <div class="col-sm-8">
+        <div class="control-group">
+          <div class="controls">
+            {{#if canEditASI}}
+              <input class="form-control" id="asi-plan-sheets-affected" value="{{ unbound getASI.plan_sheets_affected }}">
+            {{else}}
+              <input disabled class="form-control" id="asi-plan-sheets-affected" value="{{ unbound getASI.plan_sheets_affected }}">
+            {{/if}}
+            <span class="help-inline"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row margin-bottom">
+      <div class="col-sm-4"><p>Included in Addendum #:</p></div>
+      <div class="col-sm-8">
+        <div class="control-group">
+          <div class="controls">
+            {{#if canEditASI}}
+              <input class="form-control" id="asi-in-addendum" value="{{ unbound getASI.in_addendum }}">
+            {{else}}
+              <input disabled class="form-control" id="asi-included-in" value="{{ unbound getASI.in_addendum }}">
+            {{/if}}
+            <span class="help-inline"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row margin-bottom">
+      <div class="col-sm-12">
+        <p>Subject:</p>
+        <div class="control-group">
+          <div class="controls">
+            {{#if canEditASI}}
+              <input class="form-control" id="asi-subject" value="{{ unbound getASI.subject }}">
+            {{else}}
+              <input disabled class="form-control" id="asi-subject" value="{{ unbound getASI.subject }}">
+            {{/if}}
+            <span class="help-inline">{{asiErrors.subject}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row margin-bottom">
+      <div class="col-sm-12">
+        <p>Notes:</p>
+        <div class="control-group">
+          <div class="controls">
+            {{#if canEditASI}}
+              <textarea style="width: 100%; max-width: 100%; height: 150px; padding: 10px;" placeholder="Tell us about your ASI, etc" id="asi-notes">{{ unbound getASI.notes }}</textarea>
+            {{else}}
+              <textarea disabled style="width: 100%; max-width: 100%; height: 150px; padding: 10px;" placeholder="Tell us about your ASI, etc" id="asi-notes">{{ unbound getASI.notes }}</textarea>
+            {{/if}}
+            <span class="help-inline">{{asiErrors.notes}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {{partial "modals/asi_attachments_partial"}}
+  </div>
+  <div class="footer">
+    <div class="buttons">
+      <a class="button" {{action "close"}}>Cancel</a>
+      {{#unless getRFI}}
+        {{#if canDeleteASI}}
+          <a id="delete-asi-button" class="button button-red" {{action "deleteASI" target=controller}}>Delete</a>
+        {{/if}}
+
+        {{#if canEditAssignedTo}}
+          <a id="assign-asi-button" class="button button-green" {{action "openAssignRFIModal" model}}>Assign To</a>
+        {{/if}}
+      {{/unless}}
+
+      {{#if canEditASI}}
+        <a id="submit-asi-button" class="button button-blue" {{action "save" target=controller}}>Save</a>
+      {{/if}}
+
+      {{#if canReopenASI}}
+        <a id="reopen-asi-button" class="button button-green" {{action "reopen" target=controller}}>Reopen</a>
+      {{/if}}
+
+      <a href="/print/asi/{{unbound getASI.id}}" id="print-asi-button" class="button button-orange" target="_blank">Print</a>
+    </div>
+  </div>
+</div>
+
+{{#if canEditASI}}
+  <script>
+    var asiPicker = new Pikaday({
+      field: $("#asi-date-submitted")[0],
+      format: 'll',
+      onSelect: function () {
+        $("#asi-date-submitted").attr('data-has-date-submitted', true);
+      }
+    });
+  </script>
+{{/if}}

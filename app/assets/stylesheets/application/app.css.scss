@@ -1,0 +1,138 @@
+body{
+	font-family: 'Roboto', sans-serif;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.ps-input{
+    font-size: 14px;
+    padding-left:5px;
+    line-height: 1.4;
+    height: 34px;
+}
+
+.ps-input-lg{
+	width:100%;
+}
+
+.ps-quill-outline{
+	border: solid 1px #bbb;
+}
+
+.text-nowrap{
+	white-space:nowrap;
+}
+
+
+.controls li a {
+  text-align: right;
+}
+
+.demo:after{
+	clear:both;
+	visibility: hidden;
+}
+
+.modal-section{
+	margin-top: 30px;
+}
+
+.error{
+	color:#a94442;
+}
+
+.margin-top-20{
+	margin-top:20px;
+}
+
+.standard-search-bar{
+	width: 250px;
+}
+
+.alert-error{
+	color: #8a6d3b;
+  background-color: #fcf8e3;
+  border-color: #faebcc;
+}
+
+.controls li{
+	display:inline;
+	margin-left: 10px;
+}
+
+input[type="checkbox"] {
+  margin-bottom: 6px;
+}
+
+.word-wrap{
+	word-wrap: normal;
+}
+
+.div-padding{
+	margin-bottom: 20px;
+}
+
+.form-control-padding{
+	margin: 2px 2px;
+}
+
+.form-control-buffer{
+	padding: 5px 5px;
+}
+
+.form-smaller{
+	height: 1.6em;
+	font-size: 1.2em;
+	line-height: 1em;
+}
+
+// If on small screen
+@media (max-width: 768px) {
+	.share-search-input{
+		float:left !important
+	}
+
+	#search-input{
+		float:left !important
+	}
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+// Customize modal button
+.close{
+	margin-left:20px;
+	line-height: 1;
+	font-size:30px;
+}
+
+.styled-dropzone,
+#attachments-dnd,
+#rfi-attachments-dnd,
+#asi-attachments-dnd,
+#plan-dnd,
+#photos-dnd {
+    height: 100px;
+    border: 3px dashed #00baec;
+    padding: 30px 20px;
+    margin-bottom: 15px;
+    cursor: pointer;
+
+    .dz-message {
+        color: #cccccc;
+        text-align: center;
+    }
+}
+
+#submittal-attachments .file-preview {
+    font-size: 12px;
+
+    &:hover {
+        text-decoration: underline;
+        cursor: pointer;
+    }
+}

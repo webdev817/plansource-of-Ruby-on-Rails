@@ -1,0 +1,23 @@
+<div class="modal-wrapper">
+	<div class="overlay"></div>
+	<div class="dialog box box-border">
+		<div class="header">
+			<p class="title">Edit your job.</p>
+		</div>
+		<div class="body">
+			<div class="control-group">
+				<div class="controls">
+					<p>Enter a new name for this job.</p>
+					{{ view PlanSource.TextField placeholder="Job name" class="form-control" focus=true id="edit-job-name" modelAttr="name" }}
+					<span class="help-inline"></span>
+				</div>
+			</div>
+		</div>
+		<div class="footer">
+			<div class="buttons">
+				<a class="button button-blue" {{action "editJob" target=controller}} >Change</a>
+				<a class="button" {{action "close"}}>Cancel</a>
+			</div>
+		</div>
+	</div>
+</div>

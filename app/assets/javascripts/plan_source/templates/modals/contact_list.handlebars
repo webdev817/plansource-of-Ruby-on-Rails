@@ -1,0 +1,104 @@
+<div class="modal-wrapper">
+  <div class="overlay"></div>
+  <div class="dialog box box-border" style="width: 95%;">
+    <div class="header">
+      <div class="pull-right">
+        <a class="button button-blue" id="contact-share" {{action "shareWithContacts" target=controller}} >Update</a>
+        <button type="button" {{action "close"}} class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <h4 class="modal-title">Sharing Options for {{ job.name }}</h4>
+    </div>
+    <div class="body">
+      <div class="control-group">
+        <div class="controls">
+          <div class="form-inline">
+            {{ view PlanSource.TextField class="form-control" placeholder="share@email.com" focus=true id="contact-email" autocomplete=true }}
+            <input type="submit" class="button button-inline" {{ action "addContact" target="controller" }} value="+ Add Contact">
+            <span class="help-inline"></span>
+          </div>
+        </div>
+      </div>
+      <p>All contacts.  Select the ones to share with.</p>
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="form-control-padding">
+            Sort by
+            <a class="sort-option" {{ action "changeSort" "first_name" }}>First Name</a> |
+            <a class="sort-option" {{ action "changeSort" "last_name" }}>Last Name</a> |
+            <a class="sort-option" {{ action "changeSort" "sort_email" }}>Email</a> |
+            <a class="sort-option" {{ action "changeSort" "company" }}>Company</a>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <form id="share-search-form" class="pull-right">
+            <input placeholder="Search..." class="form-control form-smaller form-control-padding" style="max-width:250px" id="share-search-input-modal"/>
+          </form>
+        </div>
+      </div>
+
+      <div class="scroller-xlarge">
+        <div class="table-responsive">
+
+          <table class="table table-hover table-striped header-fixed" id="contacts-list">
+            <thead>
+              <tr>
+                <th>Pre-Development | Plan | Shops | Support | Calcs | Photos</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Company</th>
+              </tr>
+            </thead>
+            <tbody>
+              {{#each itemController="contact"}}
+              <tr>
+                <td class="share-box-group">
+                  <input class="share-box" type="checkbox" data-place="7" data-id="{{unbound id}}" {{unbound isPreDevelopmentChecked}} >
+                  Pre-Dev
+                  <input class="share-box" type="checkbox" data-place="2" data-id="{{unbound id}}" {{unbound isPlansChecked}} >
+                  Plans
+                  <input class="share-box" type="checkbox" data-place="1" data-id="{{unbound id}}" {{unbound isShopsChecked}} >
+                  Shops
+                  <input class="share-box" type="checkbox" data-place="0" data-id="{{unbound id}}" {{unbound isConsultantsChecked}} >
+                  Support
+                  <input class="share-box" type="checkbox" data-place="3" data-id="{{unbound id}}" {{unbound isCalcsChecked}} >
+                  Calcs
+                  <input class="share-box" type="checkbox" data-place="4" data-id="{{unbound id}}" {{unbound isPhotosChecked}} >
+                  Photos
+                  <input class="share-box" type="checkbox" data-place="5" data-id="{{unbound id}}" {{unbound isRenderingsChecked}} >
+                  Renderings
+                  <input class="share-box" type="checkbox" data-place="6" data-id="{{unbound id}}" {{unbound isClientChecked}} >
+                  Client
+                <td>
+                  {{ unbound first_name }}
+                </td>
+                <td>{{ unbound last_name}}</td>
+                <td>{{ unbound email }}</td>
+                <td>{{ unbound company }}</td>
+              </tr>
+              {{/each}}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <div class="buttons">
+        <a class="button button-blue" id="contact-share" {{action "shareWithContacts" target=controller}} >Update</a>
+        <a class="button" {{action "close" }} >Cancel</a>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+$("#share-search-input-modal").keyup(function () {
+  var filter = jQuery(this).val();
+  jQuery("#contacts-list tbody tr").each(function () {
+    if (jQuery(this).text().search(new RegExp(filter, "i")) < 0) {
+      jQuery(this).hide();
+    } else {
+      jQuery(this).show()
+    }
+  });
+});
+</script>

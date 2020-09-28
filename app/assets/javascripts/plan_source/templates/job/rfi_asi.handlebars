@@ -1,0 +1,107 @@
+<p class="control-buttons">
+  <a href="#" {{action "openCreateRfiModal"}} class="button button-green">Create RFI</a>
+  {{#if canCreateUnlinkedASI}}
+    <a href="#" {{action "openCreateUnlinkedAsiModal"}} class="button button-blue">Create ASI (Unlinked)</a>
+  {{/if}}
+
+  {{#if jobController.model.isMyJob}}
+    {{#if projectManager}}
+      <a href="#" {{action "openProjectManagerModal"}} class="button button-default pull-right">RFI Manager ({{projectManager.first_name}} {{projectManager.last_name}})</a>
+    {{else}}
+      <a href="#" {{action "openProjectManagerModal"}} class="button button-default pull-right">RFI Manager (Pick One)</a>
+    {{/if}}
+  {{else}}
+    {{#if projectManager}}
+      <a href="#" onClick="return false;" class="button button-default pull-right">RFI Manager ({{projectManager.first_name}} {{projectManager.last_name}})</a>
+    {{else}}
+      <a href="#" onClick="return false;" class="button button-default pull-right">RFI Manager (Not Selected)</a>
+    {{/if}}
+  {{/if}}
+</p>
+
+<nav id="rfi-asi-nav" class="rfi-asi-filters">
+  <span class="active">Filter: </span>
+  {{#if isAllFilter }}
+      <a class="active">All</a>
+  {{else}}
+    <a {{action "filter" "all"}}>All</a>
+  {{/if}}
+
+  {{#if isOpenFilter }}
+      <a class="active">Open</a>
+  {{else}}
+    <a {{action "filter" "open"}}>Open</a>
+  {{/if}}
+
+  {{#if isClosedFilter }}
+      <a class="active">Closed</a>
+  {{else}}
+    <a {{action "filter" "closed"}}>Closed</a>
+  {{/if}}
+
+  {{#if isMeFilter }}
+      <a class="active">Assigned To Me</a>
+  {{else}}
+    <a {{action "filter" "me"}}>Assigned To Me</a>
+  {{/if}}
+</nav>
+
+<div class="table-responsive" id="plan-table">
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th {{action "sort" "rfi_num"}}><a>RFI</a></th>
+        <th {{action "sort" "asi_num"}}><a>ASI</a></th>
+        <th {{action "sort" "status"}}><a>Status</a></th>
+        <th {{action "sort" "targetResponseSort"}}><a>Target Response</a></th>
+        <th {{action "sort" "daysPastDueSort"}}><a>Days Past Due</a></th>
+        <th {{action "sort" "assigned_user.first_name"}}><a>Assigned To</a></th>
+        <th {{action "sort" "subject"}}><a>Subject</a></th>
+        <th {{action "sort" "plan_sheets_affected"}}><a>Plan Sheets Affected</a></th>
+        <th {{action "sort" "in_addendum"}}><a>In Addendum #</a></th>
+        <th {{action "sort" "updated_at"}}><a>Last Updated</a></th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each controller}}
+        <tr class="pointer" {{action "openRfiAsiModal" this}}>
+          {{#if rfi_num}}
+            <td><a>{{rfi_num}}</a></td>
+          {{else}}
+            <td style="text-align: center;">-</td>
+          {{/if}}
+
+          {{#if asi_num}}
+            <td><a>{{asi_num}}</a></td>
+          {{else}}
+            <td></td>
+          {{/if}}
+
+          <td>{{status}}</td>
+          <td>{{targetResponse}}</td>
+          <td>{{daysPastDue}}</td>
+          <td title="{{unbound assigned_user.first_name}} {{unbound assigned_user.last_name}}">{{assigned_user.first_name}}</td>
+          <td title="{{unbound subject}}">{{truncate subject}}</td>
+          <td>{{plan_sheets_affected}}</td>
+          <td>{{in_addendum}}</td>
+          <td>{{date updated_at}}</td>
+        </tr>
+      {{else}}
+        <tr>
+          <td>
+            <!-- add message to if they have permissions to create -->
+          </td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>
+
+<script>
+  $(function () {
+    $('[data-toggle="popover"]').popover({trigger:"hover", placement:"top", delay:500})
+  })
+</script>
+
+
+

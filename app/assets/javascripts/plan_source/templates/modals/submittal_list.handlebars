@@ -1,0 +1,51 @@
+<div class="modal-wrapper">
+  <div class="overlay"></div>
+  <div class="dialog box box-border" style="width: 600px;">
+    <div class="header">
+      <div class="pull-right">
+        <button type="button" {{action "close"}} class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <h4 class="modal-title">Submittals To Review</h4>
+      <p>Select a submittal to review.</p>
+    </div>
+    <div class="body">
+      {{#if model.submittals}}
+        <div class="scroller-xlarge" style="padding-top: 10px;">
+          <div class="container-fluid">
+            {{#each model.submittals}}
+              <div class="row margin-bottom pointer" {{action "openSubmittalModal" this}}>
+                <div class="col-sm-7">
+                  <a href="#">{{this.data.description}}</a>
+                </div>
+                <div class="col-sm-5">
+                  submitted {{date created_at}}
+                </div>
+              </div>
+            {{else}}
+              <div>
+                This plan has no submittals.
+              </div>
+            {{/each}}
+          </div>
+        </div>
+      {{/if}}
+    </div>
+    <div class="footer">
+      <div class="buttons">
+        <a class="button" {{action "close" }} >Cancel</a>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+$("#share-search-input-modal").keyup(function () {
+  var filter = jQuery(this).val();
+  jQuery("#contacts-list tbody tr").each(function () {
+    if (jQuery(this).text().search(new RegExp(filter, "i")) < 0) {
+      jQuery(this).hide();
+    } else {
+      jQuery(this).show()
+    }
+  });
+});
+</script>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><%= @plan.filename %></title>
+    <%= favicon_link_tag %>
+
+    <style type="text/css">
+    html,body{
+      height: 100%;
+      margin: 0px;
+    }
+    </style>
+  </head>
+    <% if not @missing_url %>
+      <% if @plan.has_attribute? "plan_id" %>
+        <iframe src="/api/embed/<%= @plan.id %>?type=plan_record" width="100%" height="100%"></iframe>
+      <% else %>
+        <iframe src="/api/embed/<%= @plan.id %>" width="100%" height="100%" ></iframe>
+      <% end %>
+    <% else %>
+      <div>There doesn't seem to be an attachment here.</div>
+
+    <% end %>
+  </body>
+</html>

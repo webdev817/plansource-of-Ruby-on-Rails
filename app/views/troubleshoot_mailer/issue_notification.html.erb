@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  </head>
+  <body>
+    <h1><%= "#{@user.first_name} #{@user.last_name}" %> has submitted an issue!</h1>
+
+    <p>General:</p>
+    <ul>
+      <li>URL: <%= @url %></li>
+      <li>User Agent: <%= @user_agent %></li>
+    </ul>
+
+    <p>User:</p>
+    <ul>
+      <li>Name: <%= "#{@user.first_name} #{@user.last_name}" %></li>
+      <li>Email: <%= @user.email %></li>
+      <li>Type: <%= @user.type %></li>
+      <li>ID: <%= @user.id %></li>
+    </ul>
+
+    <% if @job %>
+      <p>Job:</p>
+      <ul>
+        <li>Name: <%= @job.name %></li>
+        <li>Archived: <%= @job.archived %></li>
+        <li>ID: <%= @job.id %></li>
+      </ul>
+    <% end %>
+
+    <p>Attachments:</p>
+    <ul>
+      <% @attachments.each do |attachment| %>
+        <li><a href="<%= attachment[:url] %>"><%= attachment[:filename] %></a></li>
+      <% end %>
+    </ul>
+
+    <p>Message:</p>
+    <p><%= @message %></p>
+  </body>
+</html>

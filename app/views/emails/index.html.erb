@@ -1,0 +1,40 @@
+
+<div class="container">
+
+  <h2>Emails</h2>
+  <div class="table-responsive" style = "overflow-x:auto;">
+    <table class="table table-striped" id = "email_table">
+      <thead>
+        <tr>
+          <th>From</th>
+          <th>To</th>
+          <th>CC</th>
+          <th>Subject</th>
+          <th>Date</th>
+          <th>Message Id</th>
+          <th>Body</th>
+          <th>Attachments</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%= render partial: 'email', collection: @emails, as: :email %>
+      </tbody>
+    </table>
+
+  </div>
+
+   <div class="table-responsive" style = "overflow-x:auto;">
+    <table class="table table-striped" id = "email_table">
+      <thead>
+        <tr>
+          <th>file names</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%= render partial: 'attachment', collection: @attachments, as: :attachment %> 
+       </tbody>
+    </table>
+    
+  </div> 
+
+</div>

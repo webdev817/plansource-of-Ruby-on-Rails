@@ -1,0 +1,23 @@
+<% content_for :title, "My Account" %>
+<div class="section">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-4 col-md-offset-4">
+
+				<h2>My Account</h2>
+				<%= simple_form_for(resource, :as => resource_name, :url => update_user_registration_path, :html => { :method => :put, :class => 'form-vertical', :style=>"margin-bottom:30px;" }) do |f| %>
+				  <%= f.error_notification %>
+				  <%= display_base_errors resource %>
+				  <%= f.input :first_name, :autofocus => true, :input_html => {:class=>"form-control" } %>
+				  <%= f.input :last_name, :input_html => {:class=>"form-control" } %>
+          <%= f.input :company, :input_html => {:class=>"form-control" }%>
+				  <%= f.input :email, :required => true, :input_html => {:class=>"form-control" } %>
+				  <%= f.input :password, :label => "New password", :autocomplete => "off", :hint => "leave it blank if you don't want to change it", :required => false, :input_html => {:class=>"form-control" } %>
+				  <%= f.input :password_confirmation, :required => false, :input_html => {:class=>"form-control" } %>
+				  <%= f.input :current_password, :hint => "we need your current password to confirm your changes", :required => true, :input_html => {:class=>"form-control" } %>
+				  <%= f.button :submit, 'Update', :class => 'button button-blue' %>
+				<% end %>
+			</div>
+		</div>
+	</div>
+</div>

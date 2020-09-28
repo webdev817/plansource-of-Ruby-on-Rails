@@ -1,0 +1,8 @@
+<% flash.each do |name, msg| %>
+  <% if msg.is_a?(String) %>
+    <!-- TODO Make sure browser can run toastr -->
+    <script>
+      toastr['<%= name == :notice ? "success" : "error" %>']('<%= msg %>')
+    </script>
+  <% end %>
+<% end %>

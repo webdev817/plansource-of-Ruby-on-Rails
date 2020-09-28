@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    </head>
+    <body>
+        <h1><%= @email %> has shared a job with you!</h1>
+        <p>Job name - <%= @share.job.name %></p>
+
+        <% if @signup_link %>
+	        <p>Don't have an account?  No worries.  A temporary one has been set up for you.</p>
+            <p>Visit the link to finish signing up: <a href="<%= @signup_link %>"><%= @signup_link %></a></p>
+        <% else %>
+            <p>Visit http://plansource.io to view the job!</p>
+        <% end %>
+    </body>
+</html>

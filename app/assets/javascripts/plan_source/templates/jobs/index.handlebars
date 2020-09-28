@@ -1,0 +1,97 @@
+{{#if showingArchivedJobs}}
+<h2>Archived Jobs</h2>
+{{else}}
+<h2>My Jobs</h2>
+{{/if}}
+
+<div class="row">
+  <div class="col-sm-6">
+
+    {{#unless showingArchivedJobs}}
+    {{#manager}}
+    <a href="#" {{action "openAddJobModal"}} class="button button-green">+ Add Job</a>
+    {{/manager}}
+    {{/unless}}
+  </div>
+  <div class="col-sm-6">
+    <div id="share-search-form">
+      <input placeholder="Search..." class="form-control form-smaller form-control-padding pull-right" style="max-width:250px" id="share-search-input"/>
+    </div>
+
+  </div>
+</div>
+<nav class="jobs-controls">
+  {{#if showingArchivedJobs}}
+  <a {{action "showNonArchivedJobs"}}>My Jobs</a>
+  <a class="active">Archived Jobs</a>
+  {{else}}
+  <a class="active">My Jobs</a>
+  <a {{action "showArchivedJobs"}}>Archived Jobs</a>
+  {{/if}}
+</nav>
+<div class="table-responsive">
+  <table class="table table-hover">
+    <thead>
+      <th>Job Name</th>
+      <th>Owner</th>
+      <th class="text-right">Controls</th>
+    </thead>
+    <tbody>
+      {{#each controller}}
+      {{#linkTo "job" this tagName="tr" classNames="job"}}
+      <td>
+        {{name}}
+      </td>
+      <td>
+        {{username}}
+      </td>
+      <td>
+        <ul class="controls pull-right unstyled">
+          {{#unless isShared}}
+            {{#if isMyJob}}
+            <li>
+              <a {{action "openMessageGroupModal" this bubbles=false}}>Message Group</a>
+            </li>
+            {{/if}}
+
+            <li><a {{action "openContactListModal" this bubbles=false}}>Share</a></li>
+            <li><a {{action "openEditJobModal" this bubbles=false}}>Edit</a></li>
+          {{else}}
+            {{#unless isMyJob}}
+            <li>
+              <a {{action "openUnshareJobModal" this bubbles=false}}>Unshare</a>
+            </li>
+            {{/unless}}
+          {{/unless}}
+        </ul>
+      </td>
+      {{/linkTo}}
+      {{else}}
+      <tr>
+        <td>
+          {{#manager}}
+          <p>You need to add a job to view and share.</p>
+          {{else}}
+          <p>You are a viewer.  You need someone to share jobs/plans with you to view.</p>
+          {{/manager}}
+        </td>
+        <td></td>
+        <td></td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>
+<script>
+$("#share-search-input").keyup(function () {
+  console.log("Searching!")
+  var filter = jQuery(this).val();
+  jQuery("table tr").not('thead tr').each(function () {
+    if (jQuery(this).text().search(new RegExp(filter, "i")) < 0) {
+      jQuery(this).hide();
+    } else {
+      jQuery(this).show()
+    }
+  });
+});
+</script>

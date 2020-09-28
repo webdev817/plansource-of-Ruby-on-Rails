@@ -1,0 +1,31 @@
+<div class="section">
+	<div class="container">
+
+		<div id="login-form">
+			<div class="row">
+				<div class="col-sm-offset-3 col-sm-6">
+
+					<h2>Sign in</h2>
+					<%= simple_form_for(@user, url: user_session_url, html: {class: "form-vertical"}) do |f| %>
+					<fieldset class="form-group">
+
+						<%= f.input_field :email, placeholder: "Email", class: "input-block-level form-control" %>
+					</fieldset>
+					<fieldset class="form-group">
+
+						<%= f.input_field :password, placeholder: "Password", class: "input-block-level form-control" %>
+					</fieldset>
+					<fieldset class="form-group">
+						<%= f.input_field :remember_me, inline_label: "remember me", :as => :boolean if Devise.mappings[:user].rememberable? %>
+					</fieldset>
+					<fieldset class="form-group">
+
+						<%= f.button :submit, "Sign in", class: "btn-success btn-block btn-large form-control" %>
+					</fieldset>
+					<% end %>
+				</div>
+
+			</div>
+		</div>
+	</div>
+</div>

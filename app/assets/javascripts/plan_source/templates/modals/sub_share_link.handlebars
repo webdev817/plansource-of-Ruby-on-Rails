@@ -1,0 +1,23 @@
+<div class="modal-wrapper">
+	<div class="overlay"></div>
+	<div class="dialog box box-border">
+		<div class="header">
+			<p class="title">Share a link to this job.</p>
+		</div>
+		<div class="body">
+			<p>Enter an email to send a share link to.</p>
+			<div class="control-group">
+				<div class="controls">
+					{{ view PlanSource.TextField class="form-control" placeholder="user@domain.com" focus=true id="share-link-email" }}
+					<div class="help-inline"></div>
+				</div>
+			</div>
+		</div>
+		<div class="footer">
+			<div class="buttons">
+				<a class="button button-blue" {{action "sendLink" target=controller}}>Send</a>
+				<a class="button" {{action "close"}}>Cancel</a>
+			</div>
+		</div>
+	</div>
+</div>

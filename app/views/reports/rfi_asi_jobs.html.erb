@@ -1,0 +1,110 @@
+<% content_for :title, "Select Jobs for RFI/ASI Report" %>
+
+<div class="section">
+	<div class="container" style="margin-bottom:30px">
+		<h2>Select Options for RFI/ASI Report</h2>
+
+    <%= form_tag(rfi_asis_report_path, method: "post") do %>
+      <div class="row">
+        <div class="col-sm-4">
+          <h3>Jobs</h3>
+          <p><a id="select-all-jobs">Select All</a> - <a id="clear-jobs">Clear</a></p>
+
+          <% @jobs.each do |job| %>
+            <% name = "job_ids_#{job.id}" %>
+
+            <%= check_box_tag "job_ids[]", job.id, true, class: "job-checkbox", id: name %>
+            <%= label_tag name, job.name %>
+
+            <br>
+          <% end %>
+        </div>
+
+        <div class="col-sm-4">
+          <h3>RFI/ASI Statuses</h3>
+          <p><a id="select-all-statuses">Select All</a> - <a id="clear-statuses">Clear</a></p>
+
+          <% ["Open", "Closed"].each_with_index do |status, i| %>
+            <% name = "statuses_#{i}" %>
+
+            <%= check_box_tag "statuses[]", status, true, class: "status-checkbox", id: name %>
+            <% if status == "" %>
+              <% # Replace blank status with text name %>
+              <%= label_tag name, "(blank)" %>
+            <% else %>
+              <%= label_tag name, status %>
+            <% end %>
+
+            <br>
+          <% end %>
+        </div>
+
+        <div class="col-sm-4">
+          <h3>Assigned Users</h3>
+          <p><a id="select-all-assigned-users">Select All</a> - <a id="clear-assigned-users">Clear</a></p>
+
+          <%= check_box_tag "assigned_user_ids[]", "", true, class: "assigned-user-checkbox", id: "assigned_user_not_set"%>
+          <%= label_tag "assigned_user_not_set", "(blank)" %>
+
+          <br>
+
+          <% @assigned_users.each_with_index do |user, i| %>
+            <% name = "assigned_user_#{user.id}" %>
+
+            <%= check_box_tag "assigned_user_ids[]", user.id, true, class: "assigned-user-checkbox", id: name %>
+            <%= label_tag name, user.full_name %>
+
+            <br>
+          <% end %>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-offset-4 col-sm-4">
+          <div class="form-group">
+            <%= submit_tag("Create Report", class: "btn-primary form-control") %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+    <script>
+      $(document).ready(function () {
+        var $selectAllJobs = $('#select-all-jobs');
+        var $clearAllJobs = $('#clear-jobs');
+        var $jobCheckboxes = $('.job-checkbox');
+
+        var $selectAllStatuses = $('#select-all-statuses');
+        var $clearAllStatuses = $('#clear-statuses');
+        var $statusCheckboxes = $('.status-checkbox');
+
+        var $selectAllAssignedUsers = $('#select-all-assigned-users');
+        var $clearAllAssignedUsers = $('#clear-assigned-users');
+        var $assignedUserCheckboxes = $('.assigned-user-checkbox');
+
+        $selectAllJobs.click(function () {
+          $jobCheckboxes.prop("checked", true);
+        });
+
+        $clearAllJobs.click(function () {
+          $jobCheckboxes.prop("checked", false);
+        });
+
+        $selectAllStatuses.click(function () {
+          $statusCheckboxes.prop("checked", true);
+        });
+
+        $clearAllStatuses.click(function () {
+          $statusCheckboxes.prop("checked", false);
+        });
+
+        $selectAllAssignedUsers.click(function () {
+          $assignedUserCheckboxes.prop("checked", true);
+        });
+
+        $clearAllAssignedUsers.click(function () {
+          $assignedUserCheckboxes.prop("checked", false);
+        });
+      });
+    </script>
+	</div>
+</div>

@@ -1,0 +1,22 @@
+<% content_for :title, "Enter your company name" %>
+<div class="section">
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-4">
+				<h2>Company Name</h2>
+                <form action="<%= set_share_link_company_name_path %>" method="POST" class="form-vertical">
+                    <% if @error %>
+                        <div class="errors">
+                            <div style="color: red;"><%= @error %></div>
+                        </div>
+                    <% end %>
+                    <div class="form-group">
+                        <label for="company_name">Enter your company name.</label><br>
+                        <input class="form-control" name="company_name" type="text" placeholder="Company Name" value="<%= @company_name %>" autofocus>
+                    </div>
+                    <button type="submit" class="button">Submit</button>
+                </form>
+			</div>
+		</div>
+	</div>
+</div>

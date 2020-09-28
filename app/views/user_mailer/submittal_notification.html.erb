@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    </head>
+    <body>
+        <h1><%= @submittal.user.email %> has submitted a submittal for review.</h1>
+        <p>Job name - <%= @submittal.job.name %></p>
+        <p>Submittal description - <%= @submittal.data["description"] %></p>
+    </body>
+</html>

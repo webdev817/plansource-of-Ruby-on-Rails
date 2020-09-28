@@ -1,0 +1,59 @@
+
+<div class="container">
+  <h2>Users Details</h2>
+<div class="row">
+  <div class="col-sm-6">
+
+<div class="div-padding">
+  <%= link_to "Sharing Details", admin_sub_logins_path %>
+</div>
+</div>
+<div class="col-sm-6">
+  <div id="share-search-form">
+    <input placeholder="Search..." class="form-control form-smaller form-control-padding standard-search-bar pull-right" id="share-search-input"/>
+  </div>
+</div>
+</div>
+<div class="table-responsive">
+<table class="table table-striped table-compact">
+  <tr>
+    <th><%= link_to "Type", users_path(s: "type", r: @s == "type" && @r == 'false') %></th>
+    <th><%= link_to "Name", users_path(s: "name", r: @s == "name" && @r == 'false') %></th>
+    <th><%= link_to "Email", users_path(s: "email", r: @s == "email" && @r == 'false') %></th>
+    <th><%= link_to "Company", users_path(s: "company", r: @s == "company" && @r == 'false') %></th>
+    <th><%= link_to "Created At", users_path(s: "created_at", r: @s == "created_at" && @r == 'false') %></th>
+    <th><%= link_to "Last Seen", users_path(s: "last_seen", r: @s == "last_seen" && @r == 'false') %></th>
+    <th></th>
+  </tr>
+  <% @users.each do |user| %>
+    <tr class="<%= "error" if user.expired %>" >
+      <td><%= user.type %></td>
+      <td><%= user.full_name %></td>
+      <td><%= user.email %></td>
+      <td><%= user.company %></td>
+      <td><%= distance_of_time_in_words(Time.now, user.created_at) %> ago</td>
+      <td><%= distance_of_time_in_words(Time.now, user.last_seen) %> ago</td>
+      <td>
+        <div class="pull-right">
+          <%= link_to "Edit", edit_user_path(user), class: "btn" %>
+        </div>
+      </td>
+    </tr>
+  <% end %>
+</table>
+</div>
+</div>
+<script>
+$("#share-search-input").keyup(function (e) {
+    e.preventDefault();
+    console.log("Searching!")
+    var filter = jQuery(this).val();
+    jQuery("table tr").not('thead tr').each(function () {
+        if (jQuery(this).text().search(new RegExp(filter, "i")) < 0) {
+            jQuery(this).hide();
+        } else {
+            jQuery(this).show()
+        }
+    });
+});
+</script>
